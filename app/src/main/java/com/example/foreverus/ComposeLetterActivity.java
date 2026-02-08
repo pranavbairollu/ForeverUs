@@ -28,6 +28,7 @@ import com.example.foreverus.databinding.ActivityComposeLetterBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -209,6 +210,12 @@ public class ComposeLetterActivity extends BaseActivity {
                         .show();
             }
 
+            // Image Removal Handling
+            if (viewState.message != null && viewState.message.equals("Image Removed")) {
+                binding.imageAttachmentContainer.setVisibility(View.GONE);
+                binding.btnAddPhoto.setText("Add Photo");
+            }
+
             // Success Handling
             if (viewState.status == ComposeLetterViewModel.Status.SUCCESS) {
                 // Hiding keyboard if open
@@ -226,7 +233,7 @@ public class ComposeLetterActivity extends BaseActivity {
 
             // Error Handling
             if (viewState.status == ComposeLetterViewModel.Status.ERROR) {
-                Toast.makeText(this, viewState.message != null ? viewState.message : "Error", Toast.LENGTH_SHORT)
+                Toast.makeText(this, viewState.message != null ? viewState.message : "Error", Toast.LENGTH_LONG)
                         .show();
             }
 
@@ -260,7 +267,7 @@ public class ComposeLetterActivity extends BaseActivity {
         if (viewModel.getSelectedImageUri() != null)
 
         {
-            binding.imageAttachmentCard.setVisibility(View.VISIBLE);
+            binding.imageAttachmentContainer.setVisibility(View.VISIBLE);
             Glide.with(this).load(viewModel.getSelectedImageUri()).into(binding.attachmentImageView);
             binding.btnAddPhoto.setText("Change Photo");
         }
@@ -282,6 +289,24 @@ public class ComposeLetterActivity extends BaseActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_send_letter) {
             sendLetter();
+            return true;
+        } else if (item.getItemId() == R.id.action_new_letter) {
+            // Clear current content but keep screen open
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Start New Letter?")
+                    .setMessage("This will clear your current text. The sent letter is safe.")
+                    .setPositiveButton("Clear", (dialog, which) -> {
+                        viewModel.clearDraft();
+                        binding.titleEditText.setText("");
+                        binding.contentEditText.setText("");
+                        viewModel.removeImage();
+                        viewModel.deleteAudio();
+                        viewModel.setOpenDate(null);
+                        binding.selectedDateTextView.setText("Select Date");
+                        Toast.makeText(this, "Ready for a new letter.", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
             return true;
         } else if (item.getItemId() == android.R.id.home) {
             getOnBackPressedDispatcher().onBackPressed();
@@ -320,13 +345,13 @@ public class ComposeLetterActivity extends BaseActivity {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    viewModel.setSelectedImageUri(uri); // State
+                    viewModel.setImageFromGallery(uri); // Process & Cache for persistence
                     // Immediate UI update handled by Observer logic or manual here?
                     // Ideally Observer, but for simplicity we trigger update via Observers usually.
                     // Let's just update View manually to be snappy OR let Observer handle it on
                     // re-bind.
                     // For now:
-                    binding.imageAttachmentCard.setVisibility(View.VISIBLE);
+                    binding.imageAttachmentContainer.setVisibility(View.VISIBLE);
                     Glide.with(this).load(uri).into(binding.attachmentImageView);
                     binding.btnAddPhoto.setText("Change Photo");
                 }
@@ -388,6 +413,8 @@ public class ComposeLetterActivity extends BaseActivity {
             binding.audioPlayerLayout.setVisibility(View.GONE);
             binding.btnRecordAudio.setVisibility(View.VISIBLE);
         });
+
+        binding.btnRemoveImage.setOnClickListener(v -> viewModel.removeImage());
     }
 
     // --- Audio Logic Wrappers ---
@@ -400,7 +427,14 @@ public class ComposeLetterActivity extends BaseActivity {
     }
 
     private void startRecording() {
-        String path = getExternalCacheDir().getAbsolutePath() + "/letter_audio_" + System.currentTimeMillis() + ".3gp";
+        // Use Internal Files Dir to prevent OS from deleting it (Fix for "File not
+        // found" error)
+        File audioDir = new File(getFilesDir(), "audio_drafts");
+        if (!audioDir.exists())
+            confirmDir(audioDir);
+
+        File audioFile = new File(audioDir, "letter_audio_" + System.currentTimeMillis() + ".3gp");
+        String path = audioFile.getAbsolutePath();
         viewModel.setAudioFilePath(path);
 
         mediaRecorder = new android.media.MediaRecorder();
@@ -635,7 +669,19 @@ public class ComposeLetterActivity extends BaseActivity {
             viewModel.setOpenDate(new Date());
         }
 
+        // Check if recording is in progress and stop it cleanly to save the file
+        if (viewModel.isRecording()) {
+            stopRecording();
+            Toast.makeText(this, "Recording saved.", Toast.LENGTH_SHORT).show();
+        }
+
         viewModel.sendLetter(title, content);
+    }
+
+    private void confirmDir(java.io.File dir) {
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
     }
 
     private void setupOnBackPressed() {

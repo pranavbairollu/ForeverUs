@@ -20,6 +20,7 @@ public class ForeverUsApplication extends Application {
         setupExoPlayerCache();
         initCloudinary();
         scheduleSpecialDateCheck();
+        LetterRepository.scheduleSync(this);
     }
 
     private void initCloudinary() {
@@ -34,8 +35,7 @@ public class ForeverUsApplication extends Application {
     }
 
     private void setupFirestorePersistence() {
-        com.google.firebase.firestore.FirebaseFirestoreSettings settings = 
-            new com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
+        com.google.firebase.firestore.FirebaseFirestoreSettings settings = new com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .setCacheSizeBytes(com.google.firebase.firestore.FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
                 .build();
@@ -46,10 +46,10 @@ public class ForeverUsApplication extends Application {
         if (simpleCache == null) {
             try {
                 java.io.File cacheDir = new java.io.File(getCacheDir(), "media");
-                androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor evictor = 
-                    new androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor(100 * 1024 * 1024); // 100MB
-                androidx.media3.database.DatabaseProvider databaseProvider = 
-                    new androidx.media3.database.StandaloneDatabaseProvider(this);
+                androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor evictor = new androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor(
+                        100 * 1024 * 1024); // 100MB
+                androidx.media3.database.DatabaseProvider databaseProvider = new androidx.media3.database.StandaloneDatabaseProvider(
+                        this);
                 simpleCache = new androidx.media3.datasource.cache.SimpleCache(cacheDir, evictor, databaseProvider);
             } catch (Exception e) {
                 // Return safely; app will run without media cache
@@ -59,25 +59,26 @@ public class ForeverUsApplication extends Application {
     }
 
     private void scheduleSpecialDateCheck() {
-        // Robustness: Schedule Daily Maintenance (Handle Year Rollover) even if user never reboots.
-        android.app.AlarmManager am = (android.app.AlarmManager) getSystemService(android.content.Context.ALARM_SERVICE);
+        // Robustness: Schedule Daily Maintenance (Handle Year Rollover) even if user
+        // never reboots.
+        android.app.AlarmManager am = (android.app.AlarmManager) getSystemService(
+                android.content.Context.ALARM_SERVICE);
         android.content.Intent maintenanceIntent = new android.content.Intent(this, MaintenanceReceiver.class);
         android.app.PendingIntent pi = android.app.PendingIntent.getBroadcast(
-            this, 
-            1001, 
-            maintenanceIntent, 
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE
-        );
+                this,
+                1001,
+                maintenanceIntent,
+                android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
 
         // Inexact repeating alarm (once per day)
-        // This is safe to call repeatedly as FLAG_UPDATE_CURRENT will just update the existing one.
+        // This is safe to call repeatedly as FLAG_UPDATE_CURRENT will just update the
+        // existing one.
         if (am != null) {
             am.setInexactRepeating(
-                android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                android.os.SystemClock.elapsedRealtime() + android.app.AlarmManager.INTERVAL_DAY,
-                android.app.AlarmManager.INTERVAL_DAY,
-                pi
-            );
+                    android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    android.os.SystemClock.elapsedRealtime() + android.app.AlarmManager.INTERVAL_DAY,
+                    android.app.AlarmManager.INTERVAL_DAY,
+                    pi);
         }
     }
 

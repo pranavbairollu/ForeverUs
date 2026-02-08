@@ -140,23 +140,42 @@
                         android:orientation="vertical"
                         android:paddingBottom="8dp">
 
-                        <!-- Image Attachment -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/imageAttachmentCard"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:layout_margin="8dp"
+                        <!-- Image Attachment Container -->
+                        <FrameLayout
+                            android:id="@+id/imageAttachmentContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:visibility="gone"
-                            app:cardCornerRadius="4dp"
-                            app:cardElevation="2dp"
-                            app:strokeWidth="4dp"
-                            app:strokeColor="#FFFFFF">
-                            <ImageView
-                                android:id="@+id/attachmentImageView"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"/>
-                        </com.google.android.material.card.MaterialCardView>
+                            android:layout_margin="8dp">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/imageAttachmentCard"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="8dp"
+                                app:cardCornerRadius="4dp"
+                                app:cardElevation="2dp"
+                                app:strokeWidth="4dp"
+                                app:strokeColor="#FFFFFF">
+                                <ImageView
+                                    android:id="@+id/attachmentImageView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerCrop"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <ImageButton
+                                android:id="@+id/btnRemoveImage"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_gravity="top|end"
+                                android:background="@drawable/rounded_background_translucent"
+                                android:src="@drawable/ic_baseline_close_24"
+                                app:tint="?attr/colorError"
+                                android:padding="4dp"
+                                android:elevation="6dp"/>
+                        </FrameLayout>
 
                         <!-- Audio Player -->
                         <LinearLayout

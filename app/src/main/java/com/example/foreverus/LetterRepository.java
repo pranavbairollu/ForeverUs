@@ -52,7 +52,8 @@ public class LetterRepository {
     }
 
     private void synchronizeFromFirestore(String relationshipId, MediatorLiveData<Resource<List<Letter>>> result) {
-        if (firestoreListener != null) firestoreListener.remove();
+        if (firestoreListener != null)
+            firestoreListener.remove();
 
         firestoreListener = firestore.collection("relationships")
                 .document(relationshipId)
@@ -61,7 +62,8 @@ public class LetterRepository {
                 .addSnapshotListener((snap, e) -> {
                     if (e != null) {
                         Log.w(TAG, "Firestore listen failed.", e);
-                        result.postValue(Resource.error(e.getMessage(), result.getValue() != null ? result.getValue().data : null));
+                        result.postValue(Resource.error(e.getMessage(),
+                                result.getValue() != null ? result.getValue().data : null));
                         return;
                     }
 
@@ -88,7 +90,8 @@ public class LetterRepository {
     }
 
     public void cleanup() {
-        if (firestoreListener != null) firestoreListener.remove();
+        if (firestoreListener != null)
+            firestoreListener.remove();
         executorService.shutdown();
     }
 
@@ -104,7 +107,8 @@ public class LetterRepository {
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e);
-                        result.postValue(Resource.error(e.getMessage(), result.getValue() != null ? result.getValue().data : null));
+                        result.postValue(Resource.error(e.getMessage(),
+                                result.getValue() != null ? result.getValue().data : null));
                         return;
                     }
 
@@ -139,40 +143,62 @@ public class LetterRepository {
 
         ref.update("opened", true)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Letter opened status synced."))
-                .addOnFailureListener(e -> Log.w(TAG, "Error updating document (will sync later via listener/worker)", e));
+                .addOnFailureListener(
+                        e -> Log.w(TAG, "Error updating document (will sync later via listener/worker)", e));
     }
-    
+
     public void updateReaction(String relationshipId, String letterId, String reaction) {
+        // 1. Optimistic Update (Local)
         executorService.execute(() -> {
-            // Local
-            Letter letter = letterDao.getLetterByIdSync(letterId); // Need Sync method or use DAO async? 
-            // Simplified: Just update Firestore for reactions -> local syncs via listener.
-            // For robust offline support, we should update DAO.
-            // Assume DAO has an update method.
+            Letter letter = letterDao.getLetterByIdSync(letterId);
+            if (letter != null) {
+                letter.setReaction(reaction);
+                letterDao.update(letter);
+            }
         });
-        
+
+        // 2. Network Update
         firestore.collection("relationships").document(relationshipId)
-            .collection("letters").document(letterId)
-            .update("reaction", reaction)
-            .addOnFailureListener(e -> Log.e(TAG, "Failed reaction update", e));
+                .collection("letters").document(letterId)
+                .update("reaction", reaction)
+                .addOnFailureListener(e -> Log.e(TAG, "Failed reaction update", e));
     }
 
     public void updateReply(String relationshipId, String letterId, String replyContent) {
+        // 1. Optimistic Update (Local)
+        executorService.execute(() -> {
+            Letter letter = letterDao.getLetterByIdSync(letterId);
+            if (letter != null) {
+                letter.setReplyContent(replyContent);
+                letter.setReplyTimestamp(new java.util.Date()); // Use local time for immediate UI
+                letterDao.update(letter);
+            }
+        });
+
+        // 2. Network Update
         firestore.collection("relationships").document(relationshipId)
-            .collection("letters").document(letterId)
-            .update(
-                "replyContent", replyContent, 
-                "replyTimestamp", com.google.firebase.Timestamp.now()
-            )
-            .addOnFailureListener(e -> Log.e(TAG, "Failed reply update", e));
+                .collection("letters").document(letterId)
+                .update(
+                        "replyContent", replyContent,
+                        "replyTimestamp", com.google.firebase.Timestamp.now())
+                .addOnFailureListener(e -> Log.e(TAG, "Failed reply update", e));
     }
-    
+
     public void markAsRead(String relationshipId, String letterId) {
-        // Only if not already read?
+        // 1. Optimistic Update (Local)
+        executorService.execute(() -> {
+            Letter letter = letterDao.getLetterByIdSync(letterId);
+            if (letter != null && letter.getReadTimestamp() == null) {
+                letter.setReadTimestamp(new java.util.Date()); // Use local time for immediate UI
+                letterDao.update(letter);
+            }
+        });
+
+        // 2. Network Update
         firestore.collection("relationships").document(relationshipId)
-            .collection("letters").document(letterId)
-            .update("readTimestamp", com.google.firebase.Timestamp.now())
-            .addOnFailureListener(e -> Log.e(TAG, "Failed read receipt", e));
+                .collection("letters").document(letterId)
+                .update("readTimestamp", com.google.firebase.Timestamp.now())
+                .addOnFailureListener(e -> Log.e(TAG, "Failed read receipt", e));
     }
 
     public void sendLetter(Letter letter, final TimelineRepository.Callback callback) {
@@ -191,14 +217,29 @@ public class LetterRepository {
                             letter.setSyncStatus(TimelineRepository.SyncStatus.SYNCED);
                             letterDao.insert(letter);
                         });
-                        if (callback != null) callback.onSuccess();
+                        if (callback != null)
+                            callback.onSuccess();
                     })
                     .addOnFailureListener(e -> {
                         // 4. Failure (Offline or Error)
                         // Data is safe locally as UNSYNCED.
-                        Log.e(TAG, "Error sending letter to Firestore", e);
-                        if (callback != null) callback.onError(e);
+                        if (callback != null)
+                            callback.onError(e);
                     });
         });
+    }
+
+    public static void scheduleSync(android.content.Context context) {
+        androidx.work.Constraints constraints = new androidx.work.Constraints.Builder()
+                .setRequiredNetworkType(androidx.work.NetworkType.CONNECTED)
+                .build();
+
+        androidx.work.OneTimeWorkRequest syncRequest = new androidx.work.OneTimeWorkRequest.Builder(
+                SyncLettersWorker.class)
+                .setConstraints(constraints)
+                .build();
+
+        androidx.work.WorkManager.getInstance(context)
+                .enqueueUniqueWork("SyncLettersWork", androidx.work.ExistingWorkPolicy.KEEP, syncRequest);
     }
 }

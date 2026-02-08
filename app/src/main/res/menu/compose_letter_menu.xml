@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_new_letter"
+        android:title="New Letter"
+        android:icon="@drawable/ic_baseline_add_24"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_send_letter"
         android:title="@string/action_send"
         android:icon="@drawable/ic_baseline_send_24"

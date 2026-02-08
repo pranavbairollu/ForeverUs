@@ -130,10 +130,41 @@ public class ComposeLetterViewModel extends AndroidViewModel {
 
                 if (json.has("openDate"))
                     openDate = new Date(json.getLong("openDate"));
-                if (json.has("imageUri"))
-                    selectedImageUri = Uri.parse(json.getString("imageUri"));
-                if (json.has("audioPath"))
-                    audioFilePath = json.getString("audioPath");
+
+                if (json.has("imageUri")) {
+                    String uriString = json.getString("imageUri");
+                    Uri parsedUri = Uri.parse(uriString);
+                    // VALIDATION COPIED FROM UPLOAD_CHECK
+                    boolean fileExists = true;
+                    if (parsedUri.getScheme() == null || "file".equals(parsedUri.getScheme())) {
+                        String path = parsedUri.getPath();
+                        if (path != null) {
+                            File file = new File(path);
+                            if (!file.exists()) {
+                                fileExists = false;
+                            }
+                        }
+                    }
+
+                    if (fileExists) {
+                        selectedImageUri = parsedUri;
+                    } else {
+                        // File lost (OS cleared cache or other issue)
+                        selectedImageUri = null;
+                        // Optional: Could set a flag to warn user "Image attachment lost"
+                    }
+                }
+
+                if (json.has("audioPath")) {
+                    String path = json.getString("audioPath");
+                    File file = new File(path);
+                    if (file.exists()) {
+                        audioFilePath = path;
+                    } else {
+                        audioFilePath = null;
+                    }
+                }
+
                 if (json.has("theme"))
                     theme = json.getString("theme");
 
@@ -213,7 +244,66 @@ public class ComposeLetterViewModel extends AndroidViewModel {
             _state.postValue(new ViewState(Status.IDLE, null));
     }
 
+    // --- Image Handling ---
+
+    public void setImageFromGallery(Uri sourceUri) {
+        // We must copy this file to our internal cache so we have persistent access
+        // (Drafts need to survive app kills, and Gallery URIs have transient
+        // permissions)
+        _state.setValue(new ViewState(Status.LOADING, "Processing Image..."));
+
+        new Thread(() -> {
+            try {
+                java.io.InputStream is = getApplication().getContentResolver().openInputStream(sourceUri);
+                if (is == null) {
+                    _state.postValue(new ViewState(Status.ERROR, "Failed to open image"));
+                    return;
+                }
+
+                // Create a file in INTERNAL FILES (not cache) to prevent OS deletion
+                File draftsDir = new File(getApplication().getFilesDir(), "drafts");
+                if (!draftsDir.exists())
+                    draftsDir.mkdirs();
+
+                File destFile = new File(draftsDir, "draft_img_" + System.currentTimeMillis() + ".jpg");
+
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(destFile);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+                fos.close();
+                is.close();
+
+                // Success
+                Uri localUri = Uri.fromFile(destFile);
+                this.selectedImageUri = localUri;
+
+                // Update UI (IDLE state with message to trigger reload)
+                ViewState vs = new ViewState(Status.IDLE, "Image Added");
+                // We can abuse draftTitle/Content to pass data? No, that's dirty.
+                // Best: Just set state IDLE. Activity's onActivityResult handles the preview
+                // initially,
+                // BUT we want to ensure the Activity uses THIS localUri if it reloads.
+                // Actually, the Activity sets the preview from the *result* URI immediately.
+                // So we just need to ensure *this* VM field is updated for Save/Upload.
+
+                _state.postValue(vs);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                _state.postValue(new ViewState(Status.ERROR, "Failed to cache image"));
+            }
+        }).start();
+    }
+
     // --- Actions ---
+
+    public void removeImage() {
+        this.selectedImageUri = null;
+        _state.postValue(new ViewState(Status.IDLE, "Image Removed"));
+    }
 
     public void deleteAudio() {
         if (audioFilePath != null) {
@@ -245,115 +335,138 @@ public class ComposeLetterViewModel extends AndroidViewModel {
         }
     }
 
+    private static final int MAX_RETRIES = 3;
+
     private void uploadNextMedia(boolean hasImage, boolean hasAudio, String title, String content) {
-        // Similar to logic in Activity, but now state-safe
         if (hasImage) {
-            _state.postValue(new ViewState(Status.LOADING, "Uploading Photo..."));
-            MediaManager.get().upload(selectedImageUri)
-                    .unsigned("foreverus_memories") // CRITICALLY IMPORTANT
-                    .callback(new UploadCallback() {
-                        @Override
-                        public void onStart(String requestId) {
-                        }
+            uploadMediaWithRetry(selectedImageUri, "image", 0, new MediaUploadCallback() {
+                @Override
+                public void onSuccess(String url) {
+                    handleUploadStep(url, null, false, hasAudio, title, content);
+                }
 
-                        @Override
-                        public void onProgress(String requestId, long bytes, long totalBytes) {
-                        }
-
-                        @Override
-                        public void onSuccess(String requestId, Map resultData) {
-                            String url = (String) resultData.get("secure_url");
-                            if (url == null)
-                                url = (String) resultData.get("url");
-                            handleUploadStep(url, null, false, hasAudio, title, content);
-                        }
-
-                        @Override
-                        public void onError(String requestId, ErrorInfo error) {
-                            _state.postValue(
-                                    new ViewState(Status.ERROR, "Image Upload Failed: " + error.getDescription()));
-                        }
-
-                        @Override
-                        public void onReschedule(String requestId, ErrorInfo error) {
-                        }
-                    }).dispatch();
+                @Override
+                public void onFailure(String error) {
+                    handleUploadFailure(title, content, "Image Upload Failed: " + error);
+                }
+            });
         } else if (hasAudio) {
-            _state.postValue(new ViewState(Status.LOADING, "Uploading Audio..."));
-            MediaManager.get().upload(audioFilePath)
-                    .unsigned("foreverus_memories") // CRITICALLY IMPORTANT
-                    .option("resource_type", "video")
-                    .callback(new UploadCallback() {
-                        @Override
-                        public void onStart(String requestId) {
-                        }
+            uploadMediaWithRetry(Uri.parse(audioFilePath), "video", 0, new MediaUploadCallback() { // video resource
+                                                                                                   // type for audio in
+                                                                                                   // Cloudinary
+                @Override
+                public void onSuccess(String url) {
+                    handleUploadStep(null, url, false, false, title, content);
+                }
 
-                        @Override
-                        public void onProgress(String requestId, long bytes, long totalBytes) {
-                        }
-
-                        @Override
-                        public void onSuccess(String requestId, Map resultData) {
-                            String url = (String) resultData.get("secure_url");
-                            if (url == null)
-                                url = (String) resultData.get("url");
-                            handleUploadStep(null, url, false, false, title, content);
-                        }
-
-                        @Override
-                        public void onError(String requestId, ErrorInfo error) {
-                            _state.postValue(new ViewState(Status.ERROR, "Audio Upload Failed"));
-                        }
-
-                        @Override
-                        public void onReschedule(String requestId, ErrorInfo error) {
-                        }
-                    }).dispatch();
+                @Override
+                public void onFailure(String error) {
+                    handleUploadFailure(title, content, "Audio Upload Failed: " + error);
+                }
+            });
         }
     }
 
-    private String tempImageUrl;
-
     private void handleUploadStep(String imageUrl, String audioUrl, boolean pendingImage, boolean pendingAudio,
             String title, String content) {
-        if (imageUrl != null)
-            tempImageUrl = imageUrl;
+        // imageUrl is effectively final and can be used in the inner class
 
         if (pendingAudio) {
-            // Image done, trigger Audio
             _state.postValue(new ViewState(Status.LOADING, "Uploading Audio..."));
-            MediaManager.get().upload(audioFilePath)
-                    .unsigned("foreverus_memories") // CRITICALLY IMPORTANT
-                    .option("resource_type", "video")
-                    .callback(new UploadCallback() {
-                        @Override
-                        public void onSuccess(String requestId, Map resultData) {
-                            String url = (String) resultData.get("secure_url");
-                            if (url == null)
-                                url = (String) resultData.get("url");
-                            finalizeSend(title, content, tempImageUrl, url);
-                        }
+            uploadMediaWithRetry(Uri.parse(audioFilePath), "video", 0, new MediaUploadCallback() {
+                @Override
+                public void onSuccess(String url) {
+                    finalizeSend(title, content, imageUrl, url);
+                }
 
-                        @Override
-                        public void onError(String requestId, ErrorInfo error) {
-                            _state.postValue(new ViewState(Status.ERROR, "Audio Upload Failed"));
-                        }
-
-                        @Override
-                        public void onStart(String requestId) {
-                        }
-
-                        @Override
-                        public void onProgress(String requestId, long bytes, long totalBytes) {
-                        }
-
-                        @Override
-                        public void onReschedule(String requestId, ErrorInfo error) {
-                        }
-                    }).dispatch();
+                @Override
+                public void onFailure(String error) {
+                    handleUploadFailure(title, content, "Audio Upload Failed: " + error);
+                }
+            });
         } else {
-            finalizeSend(title, content, tempImageUrl, audioUrl);
+            finalizeSend(title, content, imageUrl, audioUrl);
         }
+    }
+
+    private void handleUploadFailure(String title, String content, String errorMsg) {
+        saveDraft(title, content); // Force save
+        _state.postValue(new ViewState(Status.ERROR, errorMsg + "\nDraft Saved."));
+    }
+
+    private interface MediaUploadCallback {
+        void onSuccess(String url);
+
+        void onFailure(String error);
+    }
+
+    private void uploadMediaWithRetry(Uri uri, String resourceType, int retryCount, MediaUploadCallback callback) {
+        if (uri == null || (uri.toString().isEmpty())) {
+            callback.onFailure("Invalid URI");
+            return;
+        }
+
+        // Robust File Existence Check for Local Files
+        if (uri.getScheme() == null || "file".equals(uri.getScheme())) {
+            String path = uri.getPath();
+            if (path != null) {
+                File file = new File(path);
+                if (!file.exists() || file.length() == 0) {
+                    callback.onFailure("File not found or empty: " + path);
+                    return;
+                }
+            }
+        }
+
+        com.cloudinary.android.UploadRequest request;
+
+        // Dispatch based on type to satisfy compiler & SDK quirks
+        // Cloudinary Android SDK 1.x sometimes prefers String paths for local files
+        if (uri.getScheme() == null) {
+            request = MediaManager.get().upload(uri.getPath());
+        } else {
+            request = MediaManager.get().upload(uri);
+        }
+
+        request.unsigned("foreverus_memories") // Ensure this Preset exists in Cloudinary Settings!
+                .option("resource_type", resourceType.equals("video") ? "video" : "image")
+                .callback(new UploadCallback() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public void onSuccess(String requestId, Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        if (url == null)
+                            url = (String) resultData.get("url");
+                        callback.onSuccess(url);
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        String errorMsg = error.getDescription() + " (Code: " + error.getCode() + ")";
+
+                        if (retryCount < MAX_RETRIES) {
+                            _state.postValue(new ViewState(Status.LOADING,
+                                    "Error: " + error.getDescription() + ". Retrying... (" + (retryCount + 1) + "/"
+                                            + MAX_RETRIES + ")"));
+                            new Handler(Looper.getMainLooper()).postDelayed(
+                                    () -> uploadMediaWithRetry(uri, resourceType, retryCount + 1, callback), 2000);
+                        } else {
+                            callback.onFailure(errorMsg);
+                        }
+                    }
+
+                    @Override
+                    public void onStart(String requestId) {
+                    }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) {
+                    }
+                }).dispatch();
     }
 
     private void finalizeSend(String title, String content, String mediaUrl, String audioUrl) {
@@ -403,9 +516,11 @@ public class ComposeLetterViewModel extends AndroidViewModel {
                         java.util.List<String> members = (java.util.List<String>) snap
                                 .get(FirestoreConstants.FIELD_MEMBERS);
                         if (members != null) {
+                            boolean partnerFound = false;
                             for (String id : members) {
                                 if (!id.equals(currentUserId)) {
                                     letter.setToId(id);
+                                    partnerFound = true;
 
                                     // CACHE FOR OFFLINE RESILIENCE
                                     getApplication().getSharedPreferences("ForeverUsPrefs", Context.MODE_PRIVATE)
@@ -415,10 +530,14 @@ public class ComposeLetterViewModel extends AndroidViewModel {
                                     return;
                                 }
                             }
+                            if (!partnerFound) {
+                                _state.postValue(new ViewState(Status.ERROR, "No partner found in relationship"));
+                                return;
+                            }
                         }
                     }
                     // Fail or fallback
-                    _state.postValue(new ViewState(Status.ERROR, "Partner not found"));
+                    _state.postValue(new ViewState(Status.ERROR, "Relationship not found"));
                 })
                 .addOnFailureListener(e -> {
                     // Fallback to cache? Need Context/SharedPreferences.
@@ -441,7 +560,7 @@ public class ComposeLetterViewModel extends AndroidViewModel {
         letterRepository.sendLetter(letter, new TimelineRepository.Callback() {
             @Override
             public void onSuccess() {
-                clearDraft();
+                clearDraft(); // CORRECT BEHAVIOR: Clear draft after successful send.
                 scheduleUnlockNotification(letter);
                 _state.postValue(new ViewState(Status.SUCCESS, "Letter Sent!"));
             }
@@ -451,7 +570,7 @@ public class ComposeLetterViewModel extends AndroidViewModel {
                 if (e instanceof com.google.firebase.firestore.FirebaseFirestoreException &&
                         ((com.google.firebase.firestore.FirebaseFirestoreException) e)
                                 .getCode() == com.google.firebase.firestore.FirebaseFirestoreException.Code.UNAVAILABLE) {
-                    clearDraft();
+                    clearDraft(); // Offline send counts as "Sent" for the UI. Worker handles it.
                     scheduleUnlockNotification(letter); // Even offline, schedule it locally!
                     _state.postValue(new ViewState(Status.SUCCESS, "Saved Offline."));
                 } else {

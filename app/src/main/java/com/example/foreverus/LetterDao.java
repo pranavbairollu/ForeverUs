@@ -42,4 +42,7 @@ public interface LetterDao {
 
     @Query("SELECT * FROM letters WHERE letterId = :letterId")
     Letter getLetterByIdSync(String letterId);
+
+    @Query("SELECT * FROM letters WHERE syncStatus = 'UNSYNCED'")
+    List<Letter> getUnsyncedLetters();
 }
