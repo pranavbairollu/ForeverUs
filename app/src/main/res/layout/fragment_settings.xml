@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/grad_auth_background"
+    tools:context=".SettingsFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@android:color/transparent">
+
+            <!-- Profile Header Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="48dp"
+                android:paddingBottom="24dp"
+                app:layout_collapseMode="parallax">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- User Avatar -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivUserAvatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_baseline_person_24"
+                        android:scaleType="centerCrop"
+                        android:background="@color/white"
+                        android:padding="2dp"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+
+                    <!-- Heart Icon -->
+                    <ImageView
+                        android:id="@+id/ivHeartIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:src="@drawable/ic_heart_filled"
+                        app:tint="@color/icon_tint_heart" />
+
+                    <!-- Partner Avatar -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/ivPartnerAvatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_baseline_person_24"
+                        android:scaleType="centerCrop"
+                        android:background="@color/white"
+                        android:padding="2dp"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvDaysCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Together for 0 Days"
+                    android:textAppearance="?attr/textAppearanceHeadline5"
+                    android:textStyle="bold"
+                    android:textColor="?android:textColorPrimary" />
+                    
+                <TextView
+                     android:id="@+id/tvCoupleNames"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="4dp"
+                     android:text="You &amp; Partner"
+                     android:textAppearance="?attr/textAppearanceBody1"
+                     android:textColor="?android:textColorSecondary"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24" 
+                app:title=" "/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Personalization Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/headerPersonalization"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_personalization"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/coupleNicknameLayout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/settings_couple_nickname"
+                    app:boxBackgroundColor="@color/input_background"
+                    app:layout_constraintTop_toBottomOf="@id/headerPersonalization">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/coupleNicknameEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLength="20"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/headerAppearanceMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_appearance_mode"
+                    android:layout_marginTop="24dp"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/coupleNicknameLayout"/>
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggleGroupAppearanceMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:checkedButton="@id/btnModeSystem"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/headerAppearanceMode">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnModeLight"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_theme_light" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnModeDark"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_theme_dark" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnModeSystem"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_theme_system" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                <TextView
+                    android:id="@+id/headerTheme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_color_style"
+                    android:layout_marginTop="24dp"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/toggleGroupAppearanceMode"/>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:scrollbars="none"
+                    app:layout_constraintTop_toBottomOf="@id/headerTheme">
+                    
+                    <LinearLayout
+                        android:id="@+id/themePickerContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Special Dates Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_glass_card"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/headerDates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_special_dates"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/specialDatesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    tools:listitem="@layout/item_special_date"
+                    tools:itemCount="2"
+                    app:layout_constraintTop_toBottomOf="@id/headerDates"/>
+                
+                <TextView
+                    android:id="@+id/noSpecialDatesTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_special_dates_yet"
+                    android:textAlignment="center"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    style="@style/TextAppearance.Material3.BodyMedium"
+                    app:layout_constraintTop_toBottomOf="@id/headerDates"/>
+                
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrierDates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="specialDatesRecyclerView,noSpecialDatesTextView" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addSpecialDateButton"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/settings_add_date"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/barrierDates"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Danger Zone Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_danger_card"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/headerDanger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Danger Zone"
+                    android:textColor="@color/color_danger"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logoutButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/settings_log_out"
+                    android:textColor="@color/color_danger"
+                    app:strokeColor="@color/color_danger"
+                    app:layout_constraintTop_toBottomOf="@id/headerDanger"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/unpairButton"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_unpair_device"
+                    android:textColor="@color/action_delete"
+                    app:layout_constraintTop_toBottomOf="@id/logoutButton"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/testNotificationButton"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Test Notification (Debug)"
+                    android:textColor="?attr/colorOnSurface"
+                    app:layout_constraintTop_toBottomOf="@id/unpairButton"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

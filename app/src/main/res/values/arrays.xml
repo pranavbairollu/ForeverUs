@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="theme_names">
+        <item>Default</item>
+        <item>Pink Dream</item>
+        <item>Midnight Sky</item>
+        <item>Rose Gold</item>
+    </string-array>
+
+    <string-array name="theme_values">
+        <item>DEFAULT</item>
+        <item>PINK_DREAM</item>
+        <item>MIDNIGHT_SKY</item>
+        <item>ROSE_GOLD</item>
+    </string-array>
+
+    <array name="theme_colors">
+        <item>@color/white</item>
+        <item>@color/pink_dream_primary</item>
+        <item>@color/midnight_sky_primary</item>
+        <item>@color/rose_gold_primary</item>
+    </array>
+</resources>

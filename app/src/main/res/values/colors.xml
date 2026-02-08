@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core Neutrals (Warm & Soft) -->
+    <color name="black">#1F1A1B</color> <!-- Soft Black (Warm Charcoal) -->
+    <color name="white">#FFFCF9</color> <!-- Warm White (Paper White) -->
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#2D2426</color> <!-- Deep Brown-Black -->
+    <color name="text_secondary">#7A6E70</color> <!-- Muted Brown-Grey -->
+    <color name="text_tertiary">#B0A8A9</color> <!-- Light Warm Grey -->
+    
+    <!-- Backgrounds -->
+    <color name="background_light">#FFFCF9</color> <!-- Warm Paper -->
+    <color name="surface_card">#FFFFFF</color> <!-- Pure White for Card contrast -->
+    <color name="divider">#F0EAEB</color>
+
+    <!-- Dark Mode Semantics -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_card_dark">#1E1E1E</color>
+    <color name="text_primary_dark">#E0E0E0</color>
+    <color name="text_secondary_dark">#B0B0B0</color>
+    <color name="surface_variant_light">#F0EAEB</color>
+    <color name="surface_variant_dark">#424242</color>
+    <color name="primary_container_light">#FFD8E4</color> <!-- Light Pink Container -->
+    <color name="primary_container_dark">#7D5260</color> <!-- Dark Pink Container -->
+
+    <!-- Generic Greys (Deprecated, map to new neutrals) -->
+    <color name="grey_100">#F7F4F5</color>
+    <color name="grey_500">#9E9E9E</color>
+
+    <!-- Theme 1: Soft Rose (Default/Romantic) -->
+    <color name="pink_dream_primary">#E8B4B8</color> <!-- Muted Rose -->
+    <color name="pink_dream_primary_dark">#D69FA4</color>
+    <color name="pink_dream_accent">#B76E79</color> <!-- Deep Rose Gold -->
+    <color name="pink_dream_background">#FFF5F6</color> <!-- Very faint pink tint -->
+
+    <!-- Theme 2: Midnight Sky (Deep & Elegant) -->
+    <color name="midnight_sky_primary">#2C3E50</color> <!-- Deep Blue Grey -->
+    <color name="midnight_sky_primary_dark">#1A252F</color>
+    <color name="midnight_sky_accent">#8E44AD</color> <!-- Muted Purple -->
+    <color name="midnight_sky_background">#F4F6F7</color>
+
+    <!-- Theme 3: Rose Gold (Premium/Metallic) -->
+    <color name="rose_gold_primary">#C59D96</color> <!-- Dusty Copper -->
+    <color name="rose_gold_primary_dark">#A87C74</color>
+    <color name="rose_gold_accent">#8C565F</color> <!-- Wine Red -->
+    <color name="rose_gold_background">#FAF5F3</color>
+
+    <color name="shimmer_placeholder">#F0EAEB</color>
+    
+    <!-- Functional Colors -->
+    <color name="error_soft">#FFEBEE</color>
+    <color name="error_text">#C62828</color>
+    <color name="success_soft">#E8F5E9</color>
+    <color name="success_text">#2E7D32</color>
+
+    <color name="colorPrimary">@color/pink_dream_primary</color>
+
+    <!-- Semantic Tokens (Day) -->
+    <color name="player_background">#FFFCF9</color> <!-- Light/Paper -->
+    <color name="input_background">#F2F2F2</color> 
+    <color name="icon_tint_heart">#E91E63</color>
+    <color name="color_danger">#D32F2F</color>
+    <color name="action_delete">#B71C1C</color>
+    
+    <!-- Letter Colors (Day: Tan Paper) -->
+    <color name="letter_paper_color">#D2B48C</color>
+    <color name="letter_text_color">#5D4037</color>
+    <color name="letter_accent_color">#8B0000</color>
+    <color name="letter_button_text_color">#FFFFFF</color>
+
+    <color name="midnight_blue">#191970</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="spinner_card_bg">#20FFFFFF</color> <!-- 12% White for glass effect -->
+
+    <!-- AI & Diffs (Light Mode) -->
+    <color name="color_diff_insert_light">#2E7D32</color>   <!-- Strong Green -->
+    <color name="color_diff_delete_light">#C62828</color>   <!-- Strong Red -->
+    <color name="color_ghost_text_light">#9E9E9E</color>    <!-- Grey 500 -->
+    <color name="color_ai_highlight_light">#FFE082</color>  <!-- Amber 200 -->
+
+    <!-- Editor Palettes (Fixed) -->
+    <!-- Paper Mode -->
+    <color name="editor_paper_bg">#FFFAF0E6</color>         <!-- Linen -->
+    <color name="editor_paper_text">#2D2426</color>         <!-- Dark Brown -->
+    <color name="editor_paper_hint">#8D6E63</color>         <!-- WCAG: 4.5:1 on Linen -->
+    <color name="editor_paper_cursor">#5D4037</color>
+    <color name="editor_paper_selection">#4DBcaaa4</color>  <!-- Brown alpha -->
+    
+    <!-- Midnight Mode -->
+    <color name="editor_midnight_bg">#101820</color>        <!-- Deep Blue Black -->
+    <color name="editor_midnight_text">#E0E0E0</color>      <!-- Light Grey -->
+    <color name="editor_midnight_hint">#90A4AE</color>      <!-- Blue Grey (Light enough) -->
+    <color name="editor_midnight_cursor">#4FC3F7</color>    <!-- Light Blue -->
+    <color name="editor_midnight_selection">#4D4FC3F7</color>
+
+    <!-- Global/System Editor Semantics (Light) -->
+    <color name="editor_system_text_light">@color/text_primary</color>
+    <color name="editor_system_bg_light">@color/background_light</color>
+    <color name="editor_system_hint_light">@color/text_secondary</color>
+    <color name="editor_system_cursor_light">@color/text_primary</color>
+    <color name="editor_system_selection_light">#4DBcaaa4</color>
+    
+    <!-- Letter Semantics (Light) -->
+    <color name="letter_text_light">#5D4037</color>
+    <color name="letter_hint_light">#8D6E63</color>
+    <color name="letter_paper_light">#D2B48C</color>
+
+    <!-- Adventure Board (Day) -->
+    <color name="adventure_background">#F5F5F5</color>
+    <color name="adventure_card_bg">#FFFFFF</color>
+    <color name="adventure_text_primary">@color/text_primary</color>
+    <color name="adventure_text_secondary">@color/text_secondary</color>
+    <color name="adventure_icon_tint">@color/midnight_blue</color>
+
+    <!-- Auth & Glass Semantics (Day) -->
+    <color name="auth_gradient_center">#FCE4EC</color> <!-- Light Pink Center -->
+    <color name="glass_card_bg">#E6FFFFFF</color> <!-- 90% White -->
+    <color name="glass_card_stroke">#80FFFFFF</color> <!-- Frost Stroke -->
+    
+    <!-- AI Features -->
+    <color name="colorAiHighlight">#FFE082</color> <!-- Soft Warm Gold -->
+    <color name="colorReadAloudHighlight">#B2DFDB</color> <!-- Soft Teal/Cyan for Reading -->
+
+    <!-- Music Player (Semantic - Light) -->
+    <color name="player_bg_start">#FFFFFF</color>
+    <color name="player_bg_center">#F5F5F5</color>
+    <color name="player_bg_end">#E0E0E0</color>
+    <color name="player_text_primary">#2D2426</color>
+    <color name="player_text_secondary">#7A6E70</color>
+    <color name="player_icon_tint">#2D2426</color>
+    <color name="player_icon_tint_alpha">#7A6E70</color>
+    
+    <!-- Scrims & Shadows (Static) -->
+    <color name="scrim_black_50">#80000000</color>
+    <color name="scrim_black_25">#40000000</color>
+    <color name="scrim_black_80">#CC000000</color>
+    <color name="scrim_white_50">#80FFFFFF</color>
+    <!-- Video Player Overlays -->
+    <color name="text_on_image">#E0E0E0</color>
+    <color name="video_overlay_bg">#AA000000</color>
+    <color name="video_text_secondary">#B3FFFFFF</color>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Paper Base -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FDF8E8" /> <!-- Cream White -->
+            <corners android:radius="0dp" />
+        </shape>
+    </item>
+    
+    <!-- Subtle Line Pattern (Optional, simplified as solid for valid vector) -->
+    <!-- In a real asset we might use a bitmap or complex vector. 
+         Here we just keep it clean cream. -->
+</layer-list>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AI Features -->
+    <attr name="colorGhostText" format="color" />
+    <attr name="colorAiHighlight" format="color" />
+    
+    <!-- Diff Features -->
+    <attr name="colorDiffInsert" format="color" />
+    <attr name="colorDiffDelete" format="color" />
+    
+    <!-- Editor Semantics -->
+    <attr name="colorEditorText" format="color" />
+    <attr name="colorEditorBackground" format="color" />
+    <attr name="colorEditorHint" format="color" />
+    <attr name="colorEditorCursor" format="color" />
+    <attr name="colorEditorSelection" format="color" />
+    <attr name="colorEditorSelectionHandle" format="color" />
+    
+    <!-- Letter Semantics -->
+    <attr name="colorLetterText" format="color" />
+    <attr name="colorLetterHint" format="color" />
+    <attr name="colorLetterPaper" format="color" />
+</resources>

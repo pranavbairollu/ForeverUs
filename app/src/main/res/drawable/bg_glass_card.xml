@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/glass_card_bg" /> <!-- Semantic -->
+    <corners android:radius="24dp" />
+    <!-- Soft shadow handled by elevation in layout, but we can add stroke -->
+    <stroke
+        android:width="1dp"
+        android:color="@color/glass_card_stroke" />
+</shape>

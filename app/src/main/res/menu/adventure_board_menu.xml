@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_surprise_me"
+        android:title="Surprise Me"
+        android:icon="@drawable/ic_baseline_auto_awesome_24"
+        app:showAsAction="always"
+        app:iconTint="@color/white" />
+</menu>

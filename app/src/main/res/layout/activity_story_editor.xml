@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true"
+    tools:context=".StoryEditorActivity"
+    android:id="@+id/storyEditorRoot"
+    android:theme="@style/Theme.Material3.DayNight">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_baseline_close_24"
+            app:title="@string/edit_story_title"
+            app:menu="@menu/story_editor_menu"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/conflictBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="?attr/colorError"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/conflictTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnError"/>
+
+            <Button
+                android:id="@+id/buttonReloadStory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reload Story"/>
+
+            <Button
+                android:id="@+id/buttonSaveMyVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save My Version"/>
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Title Input: Clean, Large, No Box -->
+                <EditText
+                    android:id="@+id/storyTitleEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/chapter_title_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:textAppearance="?attr/textAppearanceHeadline4"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textStyle="bold"
+                    android:paddingBottom="16dp" />
+
+                <!-- Content Input: Massive, Open, No Box -->
+                <EditText
+                    android:id="@+id/storyContentEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="top"
+                    android:hint="@string/story_content_hint"
+                    android:importantForAutofill="no"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:lineSpacingMultiplier="1.5"
+                    android:minHeight="400dp"
+                    android:paddingBottom="100dp"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <TextView
+                    android:id="@+id/timestampTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="?attr/colorEditorHint"
+                    tools:text="Last saved: Just now" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorOutlineVariant"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start"
+            android:background="?attr/colorSurface"
+            android:elevation="0dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp">
+
+            <ImageButton
+                android:id="@+id/btnFormatBold"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_format_bold_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Bold"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btnFormatItalic"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_format_italic_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Italic"
+                android:layout_marginStart="8dp"
+                app:tint="?attr/colorOnSurface" />
+
+            <ImageButton
+                android:id="@+id/btnFormatUnderline"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_format_underlined_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Underline"
+                android:layout_marginStart="8dp"
+                app:tint="?attr/colorOnSurface" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/aiPreviewCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        app:cardElevation="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ai_suggestion_title"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorPrimary"/>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="?attr/colorSurfaceVariant">
+
+                <TextView
+                    android:id="@+id/aiPreviewText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:background="?attr/colorAiHighlight"
+                    tools:text="AI generated text acts here..."/>
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btnAiDiscard"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/discard"
+                    android:textColor="?attr/colorError"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                
+                <Button
+                    android:id="@+id/btnAiTryAgain"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/try_again"/>
+
+                <Button
+                    android:id="@+id/btnAiAccept"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/accept"/>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAiHelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/ai_writing_helper_fab_cd"
+        app:srcCompat="@drawable/ic_baseline_auto_awesome_24" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/ghostTextControlCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="80dp"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGhostDiscard"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_baseline_close_24"
+                app:iconTint="?attr/colorError"
+                android:contentDescription="@string/discard"
+                app:rippleColor="?attr/colorErrorContainer"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:background="?attr/colorOutlineVariant"
+                android:layout_marginHorizontal="4dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGhostAccept"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_baseline_check_24"
+                app:iconTint="?attr/colorPrimary"
+                android:contentDescription="@string/accept"
+                app:rippleColor="?attr/colorPrimaryContainer"/>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabStopAi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorError"
+        app:tint="?attr/colorOnError"
+        android:contentDescription="Stop AI Generation"
+        app:srcCompat="@drawable/ic_baseline_stop_24" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/progress_indeterminate_warm"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

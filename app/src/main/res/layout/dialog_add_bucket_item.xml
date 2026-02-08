@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/compose_letter_title_hint"
+        android:inputType="textCapSentences"
+        android:layout_marginBottom="16dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginBottom="16dp"
+        android:background="?attr/colorSurfaceVariant"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/imgAdventure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_baseline_add_photo_alternate_24"
+                app:tint="?attr/colorOnSurfaceVariant"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Photo"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+        
+        <ImageView
+            android:id="@+id/btnRemoveImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_baseline_close_24"
+            android:background="@drawable/rounded_background_translucent"
+            android:padding="4dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            app:tint="@color/white"
+            xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+        <!-- Invisible button to catch clicks if needed, though FrameLayout click is enough -->
+        <View
+            android:id="@+id/viewAddImageClickArea"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description (Optional)"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutDateWrapper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Target Date"
+            app:endIconMode="clear_text">
+            
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputTargetDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Space android:layout_width="16dp" android:layout_height="wrap_content"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Est. Cost">
+            
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputEstimatedCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:checkedButton="@+id/btnRupee">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRupee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:minWidth="48dp"
+                android:paddingHorizontal="16dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDollar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:minWidth="48dp"
+                android:paddingHorizontal="16dp"/>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:singleSelection="true">
+        <!-- We will populate chips programmatically or assume fixed set -->
+    </com.google.android.material.chip.ChipGroup>
+
+</LinearLayout>

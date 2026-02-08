@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?attr/colorSurface">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AI Co-Author"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textStyle="bold"
+        android:drawableStart="@drawable/ic_baseline_auto_awesome_24"
+        android:drawablePadding="8dp"
+        android:paddingBottom="16dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayoutCustomInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Custom instruction (optional)"
+        android:layout_marginBottom="16dp"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCustomInstruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="3"
+            android:textSize="14sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Drafting"
+        android:textAppearance="?attr/textAppearanceTitleSmall"
+        android:paddingBottom="8dp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/draftingChipGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiContinue"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Continue Writing" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiFixGrammar"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fix Grammar" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Transformations"
+        android:textAppearance="?attr/textAppearanceTitleSmall"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/transformChipGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiRewrite"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rewrite Rephrase" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiExpand"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expand Detail" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiShorten"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shorten" />
+            
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiMakeFunny"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make Funny" />
+            
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAiMakeDramatic"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make Dramatic" />
+    </com.google.android.material.chip.ChipGroup>
+
+</LinearLayout>

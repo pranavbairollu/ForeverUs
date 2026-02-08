@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <View
+            android:id="@+id/songIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/shimmer_placeholder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <View
+            android:id="@+id/songTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/shimmer_placeholder"
+            app:layout_constraintStart_toEndOf="@+id/songIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/playButton" />
+
+        <View
+            android:id="@+id/songArtistTextView"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/shimmer_placeholder"
+            app:layout_constraintStart_toStartOf="@id/songTitleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/songTitleTextView"
+            app:layout_constraintEnd_toEndOf="@id/songTitleTextView" />
+
+        <View
+            android:id="@+id/playButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@color/shimmer_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

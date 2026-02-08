@@ -1,0 +1,189 @@
+{
+    "suggestions": [
+        {
+            "text": "Watch the sunrise from a hilltop",
+            "category": "TRAVEL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Weekend roadtrip to nearest coast",
+            "category": "TRAVEL",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Visit a new country together",
+            "category": "TRAVEL",
+            "costType": "SAVING"
+        },
+        {
+            "text": "Go into the city without a map",
+            "category": "TRAVEL",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Build a blanket fort and watch movies",
+            "category": "HOME",
+            "costType": "FREE"
+        },
+        {
+            "text": "Cook a full 3-course meal together",
+            "category": "HOME",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "No-tech evening: Board games only",
+            "category": "HOME",
+            "costType": "FREE"
+        },
+        {
+            "text": "Backyard camping",
+            "category": "HOME",
+            "costType": "FREE"
+        },
+        {
+            "text": "Take a pottery class",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Recreate our first date",
+            "category": "DATE",
+            "costType": "VARIES"
+        },
+        {
+            "text": "Go stargazing at an observatory",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Late night ice cream run",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Run a 5k together",
+            "category": "GOAL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Learn a new language basics",
+            "category": "GOAL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Save $1000 for the 'Us' fund",
+            "category": "GOAL",
+            "costType": "SAVING"
+        },
+        {
+            "text": "Volunteer at a local shelter",
+            "category": "GOAL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Visit a national park",
+            "category": "TRAVEL",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Book a spontaneous flight",
+            "category": "TRAVEL",
+            "costType": "SAVING"
+        },
+        {
+            "text": "Go to a drive-in movie",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Picnic in the botanical gardens",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Try a cuisine we've never had",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Complete a 1000-piece puzzle",
+            "category": "HOME",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Bake a cake from scratch",
+            "category": "HOME",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Plant a small garden together",
+            "category": "HOME",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Read the same book and discuss",
+            "category": "GOAL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Learn to dance (Salsa/Ballroom)",
+            "category": "GOAL",
+            "costType": "VARIES"
+        },
+        {
+            "text": "Create a family tree",
+            "category": "GOAL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Watch all Harry Potter movies",
+            "category": "MOVIE",
+            "costType": "FREE"
+        },
+        {
+            "text": "Movie marathon: 80s Classics",
+            "category": "MOVIE",
+            "costType": "FREE"
+        },
+        {
+            "text": "Host a game night for friends",
+            "category": "HOME",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Go fruit picking",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Visit an aquarium or zoo",
+            "category": "DATE",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "Write time capsule letters",
+            "category": "GOAL",
+            "costType": "FREE"
+        },
+        {
+            "text": "Attend a music festival",
+            "category": "TRAVEL",
+            "costType": "SAVING"
+        },
+        {
+            "text": "Rent a cabin in the woods",
+            "category": "TRAVEL",
+            "costType": "SAVING"
+        },
+        {
+            "text": "Learn to make cocktails",
+            "category": "HOME",
+            "costType": "BUDGET"
+        },
+        {
+            "text": "DIY Paint and Sip night",
+            "category": "HOME",
+            "costType": "BUDGET"
+        }
+    ]
+}

@@ -1,0 +1,64 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ForeverUs" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <item name="colorSurface">@color/surface_card_dark</item>
+        <item name="android:textColorPrimary">@color/text_primary_dark</item>
+        <item name="android:textColorSecondary">@color/text_secondary_dark</item>
+        
+        <item name="colorSurfaceVariant">@color/surface_variant_dark</item>
+        <item name="colorPrimaryContainer">@color/primary_container_dark</item>
+
+        <!-- Semantic Mappings (Dark) -->
+        <item name="colorAiHighlight">@color/color_ai_highlight_dark</item>
+        <item name="colorGhostText">@color/color_ghost_text_dark</item>
+        <item name="colorDiffInsert">@color/color_diff_insert_dark</item>
+        <item name="colorDiffDelete">@color/color_diff_delete_dark</item>
+        
+        <item name="colorEditorText">@color/editor_system_text_dark</item>
+        <item name="colorEditorBackground">@color/editor_system_bg_dark</item>
+        <item name="colorEditorHint">@color/editor_system_hint_dark</item>
+        <item name="colorEditorCursor">@color/editor_system_cursor_dark</item>
+        <item name="colorEditorSelection">@color/editor_system_selection_dark</item>
+        <item name="colorEditorSelectionHandle">@color/pink_dream_accent</item>
+        
+        <item name="colorLetterText">@color/letter_text_dark</item>
+        <item name="colorLetterHint">@color/letter_hint_dark</item>
+        <item name="colorLetterPaper">@color/letter_paper_dark</item> 
+    </style>
+
+    <!-- Splash Screen Theme for Dark Mode -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.ForeverUs</item>
+    </style>
+
+    <!-- Pink Dream Theme -->
+    <!-- Pink Dream Theme -->
+    <style name="Theme.ForeverUs.PinkDream" parent="Base.Theme.ForeverUs">
+        <item name="colorPrimary">@color/pink_dream_primary</item>
+        <item name="colorPrimaryDark">@color/pink_dream_primary_dark</item>
+        <item name="colorAccent">@color/pink_dream_accent</item>
+        <item name="android:windowBackground">@color/pink_dream_background</item>
+        <item name="colorSecondary">@color/pink_dream_accent</item>
+    </style>
+
+    <!-- Midnight Sky Theme -->
+    <style name="Theme.ForeverUs.MidnightSky" parent="Base.Theme.ForeverUs">
+        <item name="colorPrimary">@color/midnight_sky_primary</item>
+        <item name="colorPrimaryDark">@color/midnight_sky_primary_dark</item>
+        <item name="colorAccent">@color/midnight_sky_accent</item>
+        <item name="android:windowBackground">@color/midnight_sky_background</item>
+        <item name="colorSecondary">@color/midnight_sky_accent</item>
+    </style>
+
+    <!-- Rose Gold Theme -->
+    <style name="Theme.ForeverUs.RoseGold" parent="Base.Theme.ForeverUs">
+        <item name="colorPrimary">@color/rose_gold_primary</item>
+        <item name="colorPrimaryDark">@color/rose_gold_primary_dark</item>
+        <item name="colorAccent">@color/rose_gold_accent</item>
+        <item name="android:windowBackground">@color/rose_gold_background</item>
+        <item name="colorSecondary">@color/rose_gold_accent</item>
+    </style>
+</resources>

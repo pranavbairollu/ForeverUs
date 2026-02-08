@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorPrimaryContainer" android:state_checked="true" />
+    <item android:color="?attr/colorSurfaceVariant" android:state_pressed="true"/>
+    <item android:color="@android:color/transparent" /> <!-- Border handling usually done via style, but keeping transparent/surface here -->
+</selector>

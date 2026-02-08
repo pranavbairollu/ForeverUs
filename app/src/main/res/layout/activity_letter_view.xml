@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".LetterViewActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+            app:title="A Letter for You" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.example.foreverus.FallingPetalsView
+            android:id="@+id/fallingPetalsView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="20dp"
+            android:visibility="gone" />
+
+        <!-- Envelope / Time Capsule Overlay -->
+        <FrameLayout
+            android:id="@+id/envelopeOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorLetterPaper" 
+            android:elevation="10dp"
+            android:padding="32dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+            <!-- Simplified "Envelope" color (Tan) -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/waxSealImage"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/ic_baseline_lock_24"
+                    app:tint="@color/letter_accent_color" 
+                    android:layout_marginBottom="16dp" />
+                    <!-- Dark Red for Wax Seal -->
+
+                <TextView
+                    android:id="@+id/timeCapsuleTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sealed Time Capsule"
+                    android:textColor="?attr/colorLetterText"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceHeadline5" />
+
+                <TextView
+                    android:id="@+id/timeCapsuleSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="?attr/colorLetterText"
+                    android:textAlignment="center"
+                    tools:text="Opens on November 11, 2025" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOpenSeal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Break Seal"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button"
+                    app:backgroundTint="@color/letter_accent_color"
+                    android:textColor="?attr/colorSurface"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Letter Content View -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/letterContentGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <!-- STATIONERY CONTAINER -->
+            <LinearLayout
+                android:id="@+id/letterStationeryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="32dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="48dp"
+                android:background="@drawable/stationery_classic">
+
+                <!-- NEW: Attached Media (Snapshot) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/letterImageCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="2dp"
+                    app:cardElevation="4dp"
+                    app:strokeWidth="6dp"
+                    app:strokeColor="@color/white">
+                    <ImageView
+                        android:id="@+id/letterImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- NEW: Audio Player (Minimal) -->
+                <LinearLayout
+                    android:id="@+id/letterAudioPlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/rounded_background_translucent"
+                    android:padding="8dp">
+
+                    <ImageButton
+                        android:id="@+id/btnPlayLetterAudio"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_baseline_play_circle_outline_24"
+                        app:tint="?attr/colorPrimary"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play Voice Message"
+                        android:layout_marginStart="8dp"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/letterTitleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceHeadline4"
+                    android:textStyle="bold"
+                    tools:text="A Letter to My Future Love" />
+
+                <TextView
+                    android:id="@+id/letterDateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    tools:text="Sent on: November 11, 2025" />
+
+                <TextView
+                    android:id="@+id/letterMessageTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:lineSpacingMultiplier="1.4"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    tools:text="My dearest love,\n\nI just wanted to write you this little note to tell you how much you mean to me..." />
+
+                <!-- NEW: Intimacy Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="48dp"
+                    android:layout_marginBottom="24dp">
+                    
+                    <!-- Divider -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" 
+                          android:background="?attr/colorControlHighlight" android:layout_marginBottom="16dp"/>
+
+                    <!-- Reaction Section -->
+                    <TextView
+                        android:id="@+id/reactionLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="React to this letter"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        android:visibility="gone"/>
+                        
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/reactionChipGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:singleLine="true"
+                        app:selectionRequired="true">
+                        <!-- Chips added programmatically: ❤️ 😢 😊 😭 🫂 -->
+                    </com.google.android.material.chip.ChipGroup>
+                    
+                    <!-- Display Selected/Sent Reaction -->
+                    <TextView
+                        android:id="@+id/reactionDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="32sp"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone"
+                        tools:text="❤️"/>
+                    
+                    <TextView
+                        android:id="@+id/reactionStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Partner reacted"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        android:visibility="gone"/>
+
+
+                    <!-- Reply Section -->
+                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnWriteReply"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="24dp"
+                        android:text="Write a Reply"
+                        app:icon="@drawable/ic_baseline_edit_24"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:visibility="gone"/>
+                        
+                     <!-- Reply Content (Paper Card) -->
+                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/replyCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:visibility="gone"
+                        app:cardBackgroundColor="#F8F3E0" 
+                        app:cardElevation="2dp"
+                        app:contentPadding="16dp">
+                        <!-- Cream paper color for reply -->
+                        <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+                            <TextView
+                                android:text="Reply"
+                                android:textAppearance="?attr/textAppearanceOverline"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/replyContentText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="serif"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                tools:text="I love you too!"/>
+                        </LinearLayout>
+                     </com.google.android.material.card.MaterialCardView>
+                     
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/errorGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:textColor="?android:attr/textColorSecondary"
+                tools:text="Error message" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

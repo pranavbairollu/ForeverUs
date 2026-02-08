@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.ForeverUs.Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="16dp"
+    android:foreground="?attr/selectableItemBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/songThumbnailImageView"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic"/>
+
+        <!-- Play overlay on thumbnail for clarity -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_baseline_play_arrow_24"
+            app:tint="@android:color/white"
+            android:contentDescription="@null"
+            android:background="@color/scrim_black_25"
+            android:padding="2dp"
+            app:layout_constraintStart_toStartOf="@id/songThumbnailImageView"
+            app:layout_constraintEnd_toEndOf="@id/songThumbnailImageView"
+            app:layout_constraintTop_toTopOf="@id/songThumbnailImageView"
+            app:layout_constraintBottom_toBottomOf="@id/songThumbnailImageView" />
+
+        <TextView
+            android:id="@+id/songTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@+id/songThumbnailImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="A Thousand Years" />
+
+        <TextView
+            android:id="@+id/songArtistTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="@+id/songTitleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/songTitleTextView"
+            app:layout_constraintEnd_toEndOf="@+id/songTitleTextView"
+            tools:text="Christina Perri" />
+
+        <!-- Hidden play button (functionality handled by card click), 
+             kept for compatibility if Adapter accesses it specifically -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/playButton"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/story"
+        android:title="@string/title_story"
+        android:icon="@drawable/ic_baseline_book_24" />
+    <item
+        android:id="@+id/memories"
+        android:title="@string/title_memories"
+        android:icon="@drawable/ic_baseline_photo_library_24" />
+
+    <item
+        android:id="@+id/letters"
+        android:title="@string/title_letters"
+        android:icon="@drawable/ic_baseline_email_24" />
+    <item
+        android:id="@+id/songs"
+        android:title="@string/title_songs"
+        android:icon="@drawable/ic_baseline_music_note_24" />
+
+    <item
+        android:id="@+id/menu_more"
+        android:title="@string/menu_more"
+        android:icon="@drawable/ic_baseline_menu_24" />
+
+</menu>

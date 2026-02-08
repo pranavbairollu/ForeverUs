@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="memory_image_transition" />
+
+    <!-- Dynamic Scrim Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_scrim"
+        android:paddingTop="60dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
+
+        <!-- Audio Player -->
+        <LinearLayout
+            android:id="@+id/audioPlayerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_glass_card"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/audioPlayPauseButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_baseline_play_arrow_24"
+                app:tint="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/audioSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:progressTint="@color/white"
+                android:thumbTint="@color/white" />
+
+            <TextView
+                android:id="@+id/audioTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                tools:text="00:00" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/detailTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:textStyle="bold"
+            tools:text="Memory Title" />
+
+        <TextView
+            android:id="@+id/detailDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:maxHeight="300dp"
+            android:scrollbars="vertical"
+            android:ellipsize="end"
+            tools:text="Description of the memory..." />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReplaySpin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Replay Spin 🎡"
+            android:visibility="gone"
+            app:icon="@drawable/ic_baseline_refresh_24"
+            app:iconGravity="textStart"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:textColor="@android:color/white"
+            app:strokeColor="@android:color/white"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp">
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_delete_24"
+            android:contentDescription="Delete Memory"
+            app:tint="@android:color/white"
+            android:visibility="visible"
+            android:layout_marginEnd="8dp"/>
+
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_close_24"
+            android:contentDescription="@string/close_button_cd"
+            app:tint="@android:color/white" />
+    </LinearLayout>
+
+</FrameLayout>

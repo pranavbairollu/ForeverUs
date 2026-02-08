@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".ComposeLetterActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:title="@string/compose_letter" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stationery Theme"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:layout_marginBottom="8dp"/>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/themeChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipClassic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Classic"
+                        android:checkable="true"
+                        android:checked="true"
+                        style="@style/Widget.Material3.Chip.Filter" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMidnight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Midnight"
+                        android:checkable="true"
+                        style="@style/Widget.Material3.Chip.Filter" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipRomance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Romance"
+                        android:checkable="true"
+                        style="@style/Widget.Material3.Chip.Filter" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <!-- Open When Templates -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/templatesChipGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:singleLine="true"
+                        app:selectionRequired="false">
+                        <!-- Chips added dynamically or hardcoded -->
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+                <!-- Letter Container with Dynamic Background -->
+                <LinearLayout
+                    android:id="@+id/letterContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="24dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/stationery_classic">
+
+                    <!-- Title: Moved INSIDE for correct background contrast -->
+                    <EditText
+                        android:id="@+id/titleEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/compose_letter_title_hint"
+                        android:inputType="textCapWords"
+                        android:maxLines="1"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        android:textStyle="bold"
+                        android:paddingBottom="16dp" 
+                        android:textColor="@android:color/black"/>
+
+                    <EditText
+                        android:id="@+id/contentEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:gravity="top"
+                        android:hint="@string/compose_letter_content_placeholder"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minLines="15"
+                        android:lineSpacingMultiplier="1.5"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="@android:color/black"
+                        android:paddingBottom="48dp" />
+
+                    <!-- Media Attachments (Inside Stationery) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
+
+                        <!-- Image Attachment -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/imageAttachmentCard"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_margin="8dp"
+                            android:visibility="gone"
+                            app:cardCornerRadius="4dp"
+                            app:cardElevation="2dp"
+                            app:strokeWidth="4dp"
+                            app:strokeColor="#FFFFFF">
+                            <ImageView
+                                android:id="@+id/attachmentImageView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Audio Player -->
+                        <LinearLayout
+                            android:id="@+id/audioPlayerLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:visibility="gone"
+                            android:background="@drawable/rounded_background_translucent"
+                            android:padding="8dp"
+                            android:layout_margin="8dp">
+                            
+                            <ImageButton
+                                android:id="@+id/btnPlayAudio"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:src="@drawable/ic_baseline_play_circle_outline_24"
+                                app:tint="?attr/colorPrimary"/>
+                                
+                            <TextView
+                                android:id="@+id/tvAudioLabel"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Voice Note Attached"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:layout_marginStart="8dp"
+                                android:textColor="?attr/colorOnSurface"/>
+                                
+                            <ImageButton
+                                android:id="@+id/btnDeleteAudio"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:src="@drawable/ic_baseline_delete_24"
+                                app:tint="?attr/colorError"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Media Action Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAddPhoto"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Photo"
+                        app:icon="@drawable/ic_baseline_image_24"
+                        android:layout_marginEnd="8dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRecordAudio"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Voice"
+                        app:icon="@drawable/ic_baseline_mic_24"
+                        android:layout_marginStart="8dp"/>
+
+                </LinearLayout>
+
+                <!-- Date Picker Action -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/selectDateButton"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/compose_letter_set_future_date"
+                    app:icon="@drawable/ic_baseline_calendar_today_24"
+                    app:iconGravity="textStart" />
+
+                <TextView
+                    android:id="@+id/selectedDateTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Opens on: December 14, 2025" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Emotional Completion Overlay -->
+    <!-- Emotional Completion Overlay -->
+    <FrameLayout
+        android:id="@+id/layout_sealed_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:clipChildren="false">
+
+            <RelativeLayout
+                android:id="@+id/anim_stage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clipChildren="false">
+
+                <!-- Paper Proxy (Anchor for height) -->
+                <LinearLayout
+                    android:id="@+id/paper_proxy"
+                    android:layout_width="220dp"
+                    android:layout_height="240dp"
+                    android:orientation="vertical"
+                    android:layout_centerHorizontal="true">
+                    
+                    <View
+                        android:id="@+id/paper_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF"
+                        android:layout_marginBottom="1dp"/>
+                    
+                    <View
+                        android:id="@+id/paper_mid"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#FAFAFA"/>
+
+                    <View
+                        android:id="@+id/paper_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#FFFFFF"/>
+                </LinearLayout>
+
+                <!-- Envelope Background (Aligned to bottom of paper) -->
+                <View
+                    android:id="@+id/env_bg"
+                    android:layout_width="240dp"
+                    android:layout_height="140dp"
+                    android:background="#E0D6C2"
+                    android:layout_alignBottom="@id/paper_proxy"
+                    android:layout_centerHorizontal="true" />
+                
+                <!-- Envelope Front Pocket -->
+                <ImageView
+                    android:id="@+id/env_front"
+                    android:layout_width="240dp"
+                    android:layout_height="140dp"
+                    android:src="@drawable/vector_envelope_body"
+                    android:layout_alignBottom="@id/paper_proxy"
+                    android:layout_centerHorizontal="true"/>
+
+                <!-- Envelope Flap -->
+                <ImageView
+                    android:id="@+id/env_flap"
+                    android:layout_width="240dp"
+                    android:layout_height="96dp"
+                    android:src="@drawable/vector_envelope_flap"
+                    android:layout_alignTop="@+id/env_bg"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="invisible"/>
+                
+                <!-- Seal -->
+                 <ImageView
+                    android:id="@+id/img_seal"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_baseline_check_circle_24" 
+                    app:tint="#D32F2F"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignTop="@+id/env_bg"
+                    android:layout_marginTop="30dp"
+                    android:visibility="gone"
+                    android:elevation="4dp"/> 
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_completion_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="32dp"
+                android:alpha="0">
+
+                <TextView
+                    android:id="@+id/text_sealed_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Letter Sealed"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnSurface"/>
+
+                <TextView
+                    android:id="@+id/text_sealed_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:gravity="center"
+                    android:text="Your words have been safely stored.\nThey will open when the time is right."
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
+            </LinearLayout>
+            
+        </LinearLayout>
+
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core Neutrals (Dark Mode) -->
+    <color name="black">#FFFCF9</color> <!-- Inverted: Text is Light -->
+    <color name="white">#121212</color> <!-- Inverted: Background is Dark -->
+    
+    <!-- Text Colors (Light on Dark) -->
+    <color name="text_primary">#EAE0E1</color> <!-- Soft White -->
+    <color name="text_secondary">#B0A8A9</color> <!-- Muted Grey -->
+    <color name="text_tertiary">#7A6E70</color> <!-- Darker Grey -->
+    
+    <!-- Backgrounds -->
+    <color name="background_light">#121212</color> <!-- Deep Dark Background -->
+    <color name="surface_card">#1E1E1E</color> <!-- Slightly lighter for Cards -->
+    <color name="divider">#2C2C2C</color>
+
+    <!-- Generic Greys -->
+    <color name="grey_100">#2C2C2C</color>
+    <color name="grey_500">#9E9E9E</color>
+
+    <!-- Theme 1: Soft Rose (Dark Version) -->
+    <color name="pink_dream_primary">#D69FA4</color> <!-- Slightly desaturated -->
+    <color name="pink_dream_primary_dark">#B76E79</color>
+    <color name="pink_dream_accent">#E8B4B8</color> <!-- Lighter for contrast -->
+    <color name="pink_dream_background">#1A1213</color> <!-- Dark Warm tint -->
+
+    <!-- Theme 2: Midnight Sky (Already Dark) -->
+    <color name="midnight_sky_primary">#34495E</color> 
+    <color name="midnight_sky_primary_dark">#2C3E50</color>
+    <color name="midnight_sky_accent">#9B59B6</color> 
+    <color name="midnight_sky_background">#121518</color>
+
+    <!-- Theme 3: Rose Gold (Dark Metallic) -->
+    <color name="rose_gold_primary">#A87C74</color> 
+    <color name="rose_gold_primary_dark">#8C565F</color>
+    <color name="rose_gold_accent">#C59D96</color> 
+    <color name="rose_gold_background">#1A1615</color>
+
+    <color name="shimmer_placeholder">#2C2C2C</color>
+    
+    <!-- Functional Colors -->
+    <color name="error_soft">#3E1818</color> <!-- Dark Red bg -->
+    <color name="error_text">#EF5350</color> <!-- Light Red text -->
+    <color name="success_soft">#132214</color> <!-- Dark Green bg -->
+    <color name="success_text">#66BB6A</color> <!-- Light Green text -->
+
+    <!-- Semantic Tokens (Night) -->
+    <color name="player_background">#121212</color> <!-- Dark -->
+    <color name="input_background">#2C2C2C</color> 
+    <color name="icon_tint_heart">@color/pink_dream_accent</color> <!-- Softer Pink -->
+    <color name="color_danger">@color/error_text</color> <!-- Softer Red -->
+    <color name="action_delete">@color/error_text</color>
+    
+    <!-- Letter Colors (Night: Dark Paper) -->
+    <color name="letter_paper_color">#2C2C2C</color> <!-- Dark Card -->
+    <color name="letter_text_color">#EAE0E1</color> <!-- Light Text -->
+    <color name="letter_button_text_color">#000000</color>
+
+    <!-- AI & Diffs (Dark Mode) -->
+    <color name="color_diff_insert_dark">#81C784</color>    <!-- Pastel Green -->
+    <color name="color_diff_delete_dark">#EF5350</color>    <!-- Pastel Red -->
+    <color name="color_ghost_text_dark">#B0BEC5</color>     <!-- Grey 200 -->
+    <color name="color_ai_highlight_dark">#5D4037</color>   <!-- Dark Brown/Goldish tint -->
+
+    <!-- Global/System Editor Semantics (Dark) -->
+    <color name="editor_system_text_dark">@color/text_primary</color>
+    <color name="editor_system_bg_dark">@color/background_light</color>
+    <color name="editor_system_hint_dark">@color/text_secondary</color>
+    <color name="editor_system_cursor_dark">@color/text_primary</color>
+    <color name="editor_system_selection_dark">#4D4FC3F7</color>
+    
+    <!-- Letter Semantics (Dark) -->
+    <color name="letter_text_dark">#EAE0E1</color>
+    <color name="letter_hint_dark">#B0BEC5</color>
+    <color name="letter_paper_dark">#2C2C2C</color>
+
+    <!-- Adventure Board (Night) -->
+    <color name="adventure_background">@color/midnight_sky_primary_dark</color> <!-- Using Midnight Sky Dark -->
+    <color name="adventure_card_bg">#1AFFFFFF</color> <!-- Glass effect -->
+    <color name="adventure_text_primary">#FFFFFF</color>
+    <color name="adventure_text_secondary">#B0BEC5</color>
+    <color name="adventure_icon_tint">#FFFFFF</color>
+
+    <!-- Auth & Glass Semantics (Night) -->
+    <color name="auth_gradient_center">#2D1F1F</color> <!-- Dark Warm Center -->
+    <color name="glass_card_bg">#CC1E1E1E</color> <!-- Dark Semi-Transparent -->
+    <color name="glass_card_stroke">#33FFFFFF</color> <!-- Subtle Frost -->
+    
+    <!-- AI Features -->
+    <color name="colorAiHighlight">#FBC02D</color> <!-- Darker Gold for contrast on black -->
+    <color name="colorReadAloudHighlight">#00695C</color> <!-- Dark Teal for contrast on black -->
+    
+    <!-- Music Player (Semantic - Dark) -->
+    <color name="player_bg_start">#1A1A2E</color>
+    <color name="player_bg_center">#16213E</color>
+    <color name="player_bg_end">#0F3460</color>
+    <color name="player_text_primary">#FFFFFF</color>
+    <color name="player_text_secondary">#B0BEC5</color>
+    <color name="player_icon_tint">#FFFFFF</color>
+    <color name="player_icon_tint_alpha">#B0BEC5</color>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/keyline_4"
+    android:layout_marginTop="@dimen/keyline_2"
+    android:layout_marginEnd="@dimen/keyline_4"
+    android:layout_marginBottom="@dimen/keyline_2"
+    app:cardCornerRadius="@dimen/keyline_4"
+    app:cardElevation="@dimen/keyline_1">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/keyline_4">
+
+        <ImageView
+            android:id="@+id/storyIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/story_item_icon_cd"
+            android:src="@drawable/ic_baseline_book_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/storyTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_4"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/storyIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/storyIcon"
+            app:layout_constraintTop_toTopOf="@id/storyIcon"
+            tools:text="Chapter One: The Beginning" />
+
+        <TextView
+            android:id="@+id/storyContentPreviewTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/storyIcon"
+            tools:text="This is a preview of the story content, showing the first few lines of the chapter... and then some more text to see how it wraps and ellipsizes. This is a longer preview to test the layout."/>
+
+        <TextView
+            android:id="@+id/storyLastEditedTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_4"
+            android:textAppearance="?attr/textAppearanceCaption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/storyContentPreviewTextView"
+            tools:text="Last edited by You" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

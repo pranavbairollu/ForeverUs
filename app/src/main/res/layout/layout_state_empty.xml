@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/emptyStateLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Optional Icon, hidden by default unless set in code -->
+    <ImageView
+        android:id="@+id/imgEmptyState"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_baseline_check_circle_24"
+        app:tint="?attr/colorOnSurfaceVariant"
+        xmlns:app="http://schemas.android.com/apk/res-auto" 
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/txtEmptyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="No Items Found" />
+
+    <TextView
+        android:id="@+id/txtEmptyMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        tools:text="This is a description of why the list is empty." />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCreateFirstMemory"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Start Creating"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>

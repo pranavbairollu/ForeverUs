@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/grad_auth_background">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="?android:textColorPrimary" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="Us-Time Spinner"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textStyle="bold"
+            android:textColor="?android:textColorPrimary" />
+            
+        <ImageButton
+            android:id="@+id/btnManage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_edit"
+            app:tint="?android:textColorPrimary" />
+    </LinearLayout>
+
+    <!-- Category Selection -->
+    <HorizontalScrollView
+        android:id="@+id/categoryScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+            <!-- Chips added dynamically -->
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <!-- The Stage (Card Deck) -->
+    <FrameLayout
+        android:id="@+id/cardStage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/controlsLayout"
+        app:layout_constraintTop_toBottomOf="@id/categoryScroll">
+        
+        <!-- Ambient Glow (Static) -->
+        <View
+            android:layout_width="320dp"
+            android:layout_height="420dp"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_glow_soft"
+            android:alpha="0.4" />
+
+        <!-- Result Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/resultCard"
+            android:layout_width="280dp"
+            android:layout_height="380dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="12dp"
+            android:visibility="invisible"
+            app:cardBackgroundColor="?attr/colorSurface">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
+                
+                <TextView
+                    android:id="@+id/tvResultEmoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🍕"
+                    android:textSize="96sp"
+                    android:includeFontPadding="false" />
+                    
+                <TextView
+                    android:id="@+id/tvResultText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Pizza"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                    android:textStyle="bold"
+                    android:textColor="?android:textColorPrimary"/>
+                    
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        
+        <!-- Decoration / Empty State -->
+        <TextView
+            android:id="@+id/tvPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Tap Spin to decide"
+            android:textColor="?android:textColorSecondary"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:alpha="0.7"/>
+            
+    </FrameLayout>
+
+    <!-- Controls -->
+    <LinearLayout
+        android:id="@+id/controlsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSpin"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="Spin"
+            android:textSize="20sp"
+            android:letterSpacing="0.05"
+            app:cornerRadius="36dp"
+            app:elevation="4dp"
+            android:stateListAnimator="@null"/>
+            
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

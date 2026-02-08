@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/imgPolaroidThumbnail"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            app:layout_constraintDimensionRatio="H,4:5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/placeholder_image" />
+
+        <TextView
+            android:id="@+id/txtCaption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-light"
+            android:textSize="12sp"
+            android:textColor="#333333"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Caption"
+            android:gravity="center"
+            android:letterSpacing="0.05"
+            app:layout_constraintTop_toBottomOf="@+id/imgPolaroidThumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+             android:id="@+id/txtDate"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:textSize="10sp"
+             android:textColor="#888888"
+             android:gravity="end"
+             android:layout_marginTop="4dp"
+             android:text="Date"
+             app:layout_constraintTop_toBottomOf="@+id/txtCaption"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

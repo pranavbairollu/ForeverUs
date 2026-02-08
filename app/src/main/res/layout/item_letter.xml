@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/letterIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_baseline_email_24"
+            android:contentDescription="@string/letter_icon_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorPrimary"/>
+
+        <TextView
+            android:id="@+id/letterTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/letterIcon"
+            app:layout_constraintTop_toTopOf="@+id/letterIcon"
+            app:layout_constraintEnd_toStartOf="@+id/lockIconContainer"
+            app:layout_constraintBottom_toBottomOf="@+id/letterIcon"
+            tools:text="A Secret Letter for You" />
+
+        <TextView
+            android:id="@+id/letterContentPreview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/letterIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="You can open this on..." />
+
+        <TextView
+            android:id="@+id/letterOpenDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/letterContentPreview"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Opens on: November 11, 2025" />
+
+        <FrameLayout
+            android:id="@+id/lockIconContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/lockedIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_lock_24"
+                android:contentDescription="@string/locked_icon_description"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:tint="?attr/colorOnSurfaceVariant" />
+
+            <ImageView
+                android:id="@+id/unlockedIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_lock_open_24"
+                android:contentDescription="@string/unlocked_icon_description"
+                android:visibility="gone"
+                tools:visibility="gone"
+                app:tint="?attr/colorPrimary"/>
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
