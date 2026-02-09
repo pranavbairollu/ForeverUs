@@ -43,7 +43,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_baseline_play_arrow_24"
-                app:tint="@android:color/white" />
+                app:tint="@color/player_icon_tint" />
 
             <SeekBar
                 android:id="@+id/audioSeekBar"
@@ -52,14 +52,14 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:progressTint="@color/white"
-                android:thumbTint="@color/white" />
+                android:progressTint="@color/player_icon_tint"
+                android:thumbTint="@color/player_icon_tint" />
 
             <TextView
                 android:id="@+id/audioTimeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:textColor="@color/player_text_primary"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 tools:text="00:00" />
         </LinearLayout>

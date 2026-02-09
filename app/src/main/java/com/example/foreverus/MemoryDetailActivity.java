@@ -144,12 +144,13 @@ public class MemoryDetailActivity extends BaseActivity {
             if (isPlaying) {
                 mediaPlayer.pause();
                 binding.audioPlayPauseButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+                isPlaying = false;
             } else {
                 mediaPlayer.start();
                 binding.audioPlayPauseButton.setImageResource(R.drawable.ic_baseline_pause_24);
+                isPlaying = true;
                 updateSeekBar();
             }
-            isPlaying = !isPlaying;
         });
 
         binding.audioSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -176,7 +177,7 @@ public class MemoryDetailActivity extends BaseActivity {
     private void updateSeekBar() {
         if (mediaPlayer != null && isPlaying) {
             binding.audioSeekBar.setProgress(mediaPlayer.getCurrentPosition());
-            handler.postDelayed(this::updateSeekBar, 1000);
+            handler.postDelayed(this::updateSeekBar, 33);
         }
     }
 
@@ -198,6 +199,17 @@ public class MemoryDetailActivity extends BaseActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mediaPlayer != null && isPlaying) {
+            mediaPlayer.pause();
+            isPlaying = false;
+            binding.audioPlayPauseButton.setImageResource(R.drawable.ic_baseline_play_arrow_24);
+        }
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
