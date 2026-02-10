@@ -3,6 +3,7 @@ package com.example.foreverus;
 public class User {
     private String name;
     private String email;
+    private String avatarUrl;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -27,5 +28,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

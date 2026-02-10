@@ -32,15 +32,48 @@
                     android:background="@drawable/bg_glass_card"
                     android:padding="24dp">
 
-                    <ImageView
-                        android:id="@+id/appLogo"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:contentDescription="@string/app_logo_description"
-                        android:src="@drawable/splash_icon"
+                    <FrameLayout
+                        android:id="@+id/layoutAvatarContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivAvatar"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@android:color/transparent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_baseline_person_24"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                            app:strokeColor="?attr/colorPrimary"
+                            app:strokeWidth="2dp" />
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="bottom|end"
+                            android:background="@drawable/bg_circle_white"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_baseline_add_24"
+                            app:tint="?attr/colorPrimary" />
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tvAddPhoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Tap to add profile photo"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        android:textColor="?android:textColorSecondary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutAvatarContainer" />
 
                     <TextView
                         android:id="@+id/titleTextView"
@@ -52,7 +85,7 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/appLogo" />
+                        app:layout_constraintTop_toBottomOf="@id/tvAddPhoto" />
 
                     <TextView
                         android:id="@+id/subtitleTextView"

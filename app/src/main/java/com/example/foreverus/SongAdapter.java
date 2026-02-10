@@ -106,12 +106,19 @@ public class SongAdapter extends ListAdapter<Song, SongAdapter.SongViewHolder> {
                             artists.add(s.getArtist() != null ? s.getArtist() : "");
                         }
 
-                        intent.putStringArrayListExtra("EXTRA_VIDEO_IDS", ids);
-                        intent.putStringArrayListExtra("EXTRA_VIDEO_TITLES", titles);
-                        intent.putStringArrayListExtra("EXTRA_VIDEO_ARTISTS", artists);
+                        intent.putStringArrayListExtra("EXTRA_VIDEO_IDS", new java.util.ArrayList<>(ids));
+                        intent.putStringArrayListExtra("EXTRA_VIDEO_TITLES", new java.util.ArrayList<>(titles));
+                        intent.putStringArrayListExtra("EXTRA_VIDEO_ARTISTS", new java.util.ArrayList<>(artists));
                         intent.putExtra("EXTRA_START_INDEX", position);
 
-                        context.startActivity(intent);
+                        try {
+                            context.startActivity(intent);
+                        } catch (android.content.ActivityNotFoundException e) {
+                            Toast.makeText(context, "Player not found", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            // Catch TransactionTooLargeException or other runtime errors
+                            Toast.makeText(context, "Playlist too large to play all", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         Toast.makeText(context, R.string.invalid_youtube_url, Toast.LENGTH_SHORT).show();
                     }

@@ -163,6 +163,43 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
                 binding.coupleNicknameEditText.setText(nickname);
             }
         });
+
+        settingsViewModel.getUploadState().observe(getViewLifecycleOwner(), state -> {
+            if (binding == null)
+                return; // Crash prevention check
+            View progressBar = binding.getRoot().findViewById(R.id.pbAvatarUpload);
+            if (progressBar != null) {
+                switch (state) {
+                    case UPLOADING:
+                        progressBar.setVisibility(View.VISIBLE);
+                        binding.ivUserAvatar.setEnabled(false);
+                        binding.ivUserAvatar.setAlpha(0.5f);
+                        break;
+                    case SUCCESS:
+                        progressBar.setVisibility(View.GONE);
+                        binding.ivUserAvatar.setEnabled(true);
+                        binding.ivUserAvatar.setAlpha(1.0f);
+                        Toast.makeText(requireContext(), "Profile photo updated!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case ERROR:
+                        progressBar.setVisibility(View.GONE);
+                        binding.ivUserAvatar.setEnabled(true);
+                        binding.ivUserAvatar.setAlpha(1.0f);
+                        break;
+                    default:
+                        progressBar.setVisibility(View.GONE);
+                        binding.ivUserAvatar.setEnabled(true);
+                        binding.ivUserAvatar.setAlpha(1.0f);
+                        break;
+                }
+            }
+        });
+
+        settingsViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && getContext() != null) { // Added context check
+                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setupThemePicker() {

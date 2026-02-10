@@ -100,25 +100,6 @@ public class MusicPlayerActivity extends BaseActivity {
     private android.media.AudioFocusRequest audioFocusRequest;
     private android.media.AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
 
-    private static final String ACTION_MEDIA_CONTROL = "media_control";
-    private static final String EXTRA_CONTROL_TYPE = "control_type";
-    private static final int CONTROL_TYPE_PLAY = 1;
-    private static final int CONTROL_TYPE_PAUSE = 2;
-
-    private final android.content.BroadcastReceiver pipReceiver = new android.content.BroadcastReceiver() {
-        @Override
-        public void onReceive(android.content.Context context, android.content.Intent intent) {
-            if (ACTION_MEDIA_CONTROL.equals(intent.getAction())) {
-                int controlType = intent.getIntExtra(EXTRA_CONTROL_TYPE, 0);
-                if (controlType == CONTROL_TYPE_PLAY) {
-                    playVideo();
-                } else if (controlType == CONTROL_TYPE_PAUSE) {
-                    pauseVideo();
-                }
-            }
-        }
-    };
-
     @Override
     @android.annotation.SuppressLint("UnspecifiedRegisterReceiverFlag")
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,13 +118,6 @@ public class MusicPlayerActivity extends BaseActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(pipReceiver, new android.content.IntentFilter(ACTION_MEDIA_CONTROL),
-                    Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(pipReceiver, new android.content.IntentFilter(ACTION_MEDIA_CONTROL));
-        }
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         isShuffleOn = prefs.getBoolean("isShuffleOn", false);
@@ -186,29 +160,7 @@ public class MusicPlayerActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        // Feature: Back button triggers PiP if playing, allowing background listening
-        if (isPlaying && !isInPictureInPictureMode()) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                boolean pipSupported = getPackageManager()
-                        .hasSystemFeature(android.content.pm.PackageManager.FEATURE_PICTURE_IN_PICTURE);
-                if (pipSupported) {
-                    try {
-                        android.app.PictureInPictureParams params = updatePipParams(true);
-                        if (params != null) {
-                            enterPictureInPictureMode(params);
-                        } else {
-                            // Fallback
-                            android.app.PictureInPictureParams.Builder builder = new android.app.PictureInPictureParams.Builder()
-                                    .setAspectRatio(new android.util.Rational(16, 9));
-                            enterPictureInPictureMode(builder.build());
-                        }
-                        return; // Prevent closing
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+
         super.onBackPressed();
     }
 
@@ -248,24 +200,42 @@ public class MusicPlayerActivity extends BaseActivity {
 
     private void handleIntent(android.content.Intent intent) {
         if (intent.hasExtra(EXTRA_VIDEO_IDS)) {
-            videoIds = intent.getStringArrayListExtra(EXTRA_VIDEO_IDS);
-            titles = intent.getStringArrayListExtra(EXTRA_VIDEO_TITLES);
-            artists = intent.getStringArrayListExtra(EXTRA_VIDEO_ARTISTS);
+            // SAFE UNPACKING
+            java.util.ArrayList<String> rawIds = intent.getStringArrayListExtra(EXTRA_VIDEO_IDS);
+            java.util.ArrayList<String> rawTitles = intent.getStringArrayListExtra(EXTRA_VIDEO_TITLES);
+            java.util.ArrayList<String> rawArtists = intent.getStringArrayListExtra(EXTRA_VIDEO_ARTISTS);
+
+            // Null Safety
+            videoIds = rawIds != null ? rawIds : new java.util.ArrayList<>();
+            titles = rawTitles != null ? rawTitles : new java.util.ArrayList<>();
+            artists = rawArtists != null ? rawArtists : new java.util.ArrayList<>();
+
+            // Data Integrity: Sync sizes to prevent crashes
+            int size = videoIds.size();
+            while (titles.size() < size)
+                titles.add("Unknown Title");
+            while (artists.size() < size)
+                artists.add("Unknown Artist");
+            // If titles/artists had MORE, we ignore the extras or could trim, but usually <
+            // is the crash risk.
+
             currentIndex = intent.getIntExtra(EXTRA_START_INDEX, 0);
+            if (currentIndex < 0)
+                currentIndex = 0;
+            if (size > 0 && currentIndex >= size)
+                currentIndex = 0;
 
             // Capture Originals IMMEDIATELY
-            if (videoIds != null) {
-                originalVideoIds = new java.util.ArrayList<>(videoIds);
-                originalTitles = new java.util.ArrayList<>(titles);
-                originalArtists = new java.util.ArrayList<>(artists);
-            }
+            originalVideoIds = new java.util.ArrayList<>(videoIds);
+            originalTitles = new java.util.ArrayList<>(titles);
+            originalArtists = new java.util.ArrayList<>(artists);
 
             if (intent.getBooleanExtra("EXTRA_FORCE_SHUFFLE", false)) {
                 isShuffleOn = true;
                 prefs.edit().putBoolean("isShuffleOn", true).apply();
 
                 // Perform Shuffle NOW
-                if (videoIds != null && videoIds.size() > 1) {
+                if (videoIds.size() > 1) {
                     // Create indices to shuffle
                     java.util.List<Integer> indices = new java.util.ArrayList<>();
                     for (int i = 0; i < videoIds.size(); i++) {
@@ -295,13 +265,15 @@ public class MusicPlayerActivity extends BaseActivity {
             String videoId = intent.getStringExtra(EXTRA_VIDEO_ID);
             String title = intent.getStringExtra(EXTRA_VIDEO_TITLE);
             String artist = intent.getStringExtra(EXTRA_VIDEO_ARTIST);
+
+            videoIds = new java.util.ArrayList<>();
+            titles = new java.util.ArrayList<>();
+            artists = new java.util.ArrayList<>();
+
             if (videoId != null) {
-                videoIds = new java.util.ArrayList<>();
                 videoIds.add(videoId);
-                titles = new java.util.ArrayList<>();
-                titles.add(title);
-                artists = new java.util.ArrayList<>();
-                artists.add(artist);
+                titles.add(title != null ? title : "Unknown Title");
+                artists.add(artist != null ? artist : "Unknown Artist");
             }
         }
     }
@@ -321,30 +293,11 @@ public class MusicPlayerActivity extends BaseActivity {
             binding.playerSongArtist.setText(artists.get(currentIndex));
         }
         binding.btnClose.setOnClickListener(v -> finish());
-        // PiP Button
-        binding.btnPip.setOnClickListener(v -> {
-            boolean pipSupported = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O
-                    && getPackageManager()
-                            .hasSystemFeature(android.content.pm.PackageManager.FEATURE_PICTURE_IN_PICTURE);
-
-            if (pipSupported) {
-                try {
-                    android.app.PictureInPictureParams params = new android.app.PictureInPictureParams.Builder()
-                            .setAspectRatio(new android.util.Rational(16, 9))
-                            .build();
-                    enterPictureInPictureMode(params);
-                } catch (Exception e) {
-                    showStatus("Error entering PiP");
-                }
-            } else {
-                showStatus("PiP not supported on this device");
-            }
-        });
 
         binding.btnNext.setOnClickListener(v -> playNextSong());
         binding.btnPrevious.setOnClickListener(v -> playPreviousSong());
 
-        binding.btnPlayPause.setOnClickListener(v -> togglePlayPause());
+        binding.btnShare.setOnClickListener(v -> shareCurrentSong());
 
         binding.btnShuffle.setOnClickListener(v -> toggleShuffle());
         binding.btnLoop.setOnClickListener(v -> toggleLoop());
@@ -354,11 +307,17 @@ public class MusicPlayerActivity extends BaseActivity {
         setupWebView();
     }
 
-    private void togglePlayPause() {
-        if (isPlaying) {
-            pauseVideo();
-        } else {
-            playVideo();
+    private void shareCurrentSong() {
+        if (currentIndex >= 0 && currentIndex < videoIds.size()) {
+            String currentVideoId = videoIds.get(currentIndex);
+            String currentTitle = titles.get(currentIndex);
+
+            String shareText = "Check out this song: " + currentTitle + "\nhttps://youtu.be/" + currentVideoId;
+
+            android.content.Intent shareIntent = new android.content.Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareText);
+            startActivity(android.content.Intent.createChooser(shareIntent, "Share Song via"));
         }
     }
 
@@ -372,7 +331,7 @@ public class MusicPlayerActivity extends BaseActivity {
         }
         updateControlsUI();
         updateVisualizerState(false);
-        updatePipParams(false);
+
     }
 
     private void playVideo() {
@@ -386,16 +345,11 @@ public class MusicPlayerActivity extends BaseActivity {
         }
         updateControlsUI();
         updateVisualizerState(true);
-        updatePipParams(true);
+
     }
 
     private void updateControlsUI() {
-        // Play/Pause Icon Update
-        if (isPlaying) {
-            binding.btnPlayPause.setImageResource(R.drawable.ic_baseline_pause_24);
-        } else {
-            binding.btnPlayPause.setImageResource(R.drawable.ic_baseline_play_arrow_24);
-        }
+
         // Shuffle UI
         float alphaShuffle = isShuffleOn ? 1.0f : 0.5f;
         int colorShuffle = android.graphics.Color.WHITE; // Always white, alpha indicates state
@@ -671,7 +625,7 @@ public class MusicPlayerActivity extends BaseActivity {
                 isPlaying = true;
                 updateControlsUI();
                 updateVisualizerState(true);
-                updatePipParams(true);
+
             });
         }
 
@@ -683,7 +637,7 @@ public class MusicPlayerActivity extends BaseActivity {
                 isPlaying = false;
                 updateControlsUI();
                 updateVisualizerState(false);
-                updatePipParams(false);
+
             });
         }
 
@@ -849,6 +803,8 @@ public class MusicPlayerActivity extends BaseActivity {
 
                 // Hack: Try to inject AdSkipper into Native Player (WebView wrapper)
                 binding.youtubePlayerView.postDelayed(() -> {
+                    if (isFinishing() || isDestroyed())
+                        return;
                     injectAdSkipper(binding.youtubePlayerView);
                 }, 2000); // Wait for IFrame load
             }
@@ -864,7 +820,7 @@ public class MusicPlayerActivity extends BaseActivity {
                 if (state == com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.ENDED) {
                     consecutiveErrors = 0;
                     updateVisualizerState(false);
-                    updatePipParams(false);
+
                     updateControlsUI();
                     playNextSong();
                 } else if (state == com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.PLAYING) {
@@ -875,16 +831,19 @@ public class MusicPlayerActivity extends BaseActivity {
                     isMuted = false; // Strict: Reset internal state
                     showNativePlayer();
                     updateVisualizerState(true);
-                    updatePipParams(true);
+
                     updateControlsUI(); // Sync Button
                 } else if (state == com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.PAUSED) {
                     isPlaying = false;
                     updateVisualizerState(false);
-                    updatePipParams(false);
+
                     updateControlsUI(); // Sync Button
                 } else {
-                    isPlaying = false;
-                    updateVisualizerState(false); // Strict: Stop visualizer on Buffer/Unknown
+                    // Buffering or Unknown: Keep isPlaying state or assume playing if we were
+                    // playing
+                    // Do NOT stop visualizer here to ensure it "keeps playing" visually if possible
+                    // isPlaying = false; // Commented out to prevent state flicker
+                    // updateVisualizerState(false); // REMOVED: Keep visualizer active
                     updateControlsUI();
                 }
             }
@@ -941,7 +900,7 @@ public class MusicPlayerActivity extends BaseActivity {
             // startWatchdog(); // REMOVED: Watchdog caused issues on slow networks
 
             updateControlsUI();
-            updatePipParams(true);
+
             updateVisualizerState(true);
         }
     }
@@ -998,8 +957,26 @@ public class MusicPlayerActivity extends BaseActivity {
 
         if (currentPlayer == null)
             return;
+
+        // Safety Check: Empty List
+        if (videoIds == null || videoIds.isEmpty()) {
+            showStatus("No songs in playlist");
+            return;
+        }
+
+        // Safety Check: Bounds
+        if (currentIndex < 0)
+            currentIndex = 0;
+        if (currentIndex >= videoIds.size())
+            currentIndex = 0;
+
         if (currentIndex >= 0 && currentIndex < videoIds.size()) {
             String vid = videoIds.get(currentIndex);
+            // Ensure titles/artists are safe to access
+            if (titles != null && titles.size() > currentIndex) {
+                // Good
+            }
+
             if (vid != null && !vid.isEmpty()) {
                 binding.btnOpenYoutube.setVisibility(View.GONE);
 
@@ -1063,11 +1040,6 @@ public class MusicPlayerActivity extends BaseActivity {
         if (visualizerView == null)
             return;
 
-        if (isInPictureInPictureMode()) {
-            visualizerView.stop();
-            return;
-        }
-
         if (playing) {
             visualizerView.setVisibility(View.VISIBLE);
             try {
@@ -1081,127 +1053,6 @@ public class MusicPlayerActivity extends BaseActivity {
         }
     }
 
-    private android.app.PictureInPictureParams updatePipParams(boolean isPlaying) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            try {
-                java.util.ArrayList<android.app.RemoteAction> actions = new java.util.ArrayList<>();
-
-                int iconId = isPlaying ? R.drawable.ic_baseline_pause_24 : R.drawable.ic_baseline_play_arrow_24;
-                String title = isPlaying ? "Pause" : "Play";
-                int controlType = isPlaying ? CONTROL_TYPE_PAUSE : CONTROL_TYPE_PLAY;
-
-                android.app.PendingIntent intent = android.app.PendingIntent.getBroadcast(
-                        this,
-                        controlType,
-                        new android.content.Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType)
-                                .setPackage(getPackageName()),
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
-
-                actions.add(new android.app.RemoteAction(
-                        android.graphics.drawable.Icon.createWithResource(this, iconId),
-                        title,
-                        title,
-                        intent));
-
-                android.app.PictureInPictureParams params = new android.app.PictureInPictureParams.Builder()
-                        .setAspectRatio(new android.util.Rational(16, 9))
-                        .setActions(actions)
-                        .build();
-
-                setPictureInPictureParams(params);
-                return params;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        // STRICT RULE: Enter PiP only if media is actively playing (or paused but
-        // active).
-        // Robust Null Check: Ensure binding and player exist before attempting PiP
-        if (binding != null && currentPlayer != null && !isFinishing()) {
-            try {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    // Generate Params WITH Actions based on CURRENT state
-                    android.app.PictureInPictureParams params = updatePipParams(isPlaying);
-
-                    // Android 12+ handles auto-enter, but for older versions or explicit cases:
-                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
-                        if (params != null) {
-                            enterPictureInPictureMode(params);
-                        }
-                    }
-
-                    // Force continue playback if it was playing (Fixes stopping issue)
-                    if (isPlaying) {
-                        // Double tap: Ensure native player isn't paused by system
-                        if (currentPlayer != null)
-                            currentPlayer.play();
-
-                        // Ensure WebView isn't paused
-                        if (webView != null) {
-                            webView.evaluateJavascript(
-                                    "window.shouldPlay = true; var v = document.querySelector('video'); if(v) v.play();",
-                                    null);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // Fail silently to prevent crash on exit
-                e.printStackTrace();
-            }
-        }
-        super.onUserLeaveHint();
-    }
-
-    @Override
-    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode,
-            android.content.res.Configuration newConfig) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
-
-        if (binding == null)
-            return; // Crash Protection
-
-        android.view.ViewGroup.MarginLayoutParams params = (android.view.ViewGroup.MarginLayoutParams) binding.playerContainer
-                .getLayoutParams();
-
-        if (isInPictureInPictureMode) {
-            // Hide non-video elements
-            binding.songInfoContainer.setVisibility(View.GONE);
-            binding.btnClose.setVisibility(View.GONE);
-            binding.btnPip.setVisibility(View.GONE); // Hide PiP button itself
-            binding.btnOpenYoutube.setVisibility(View.GONE); // Ensure this is hidden
-            visualizerView.stop();
-            visualizerView.setVisibility(View.GONE);
-
-            // FORCE JS Injection again to ensure UI is clean for PiP
-            if (webView != null) {
-                webView.evaluateJavascript(getAdSkipperScript(), null);
-            }
-
-            // Remove Margin for Full Window Video
-            params.topMargin = 0;
-            binding.playerContainer.setLayoutParams(params);
-        } else {
-            // Restore UI
-            binding.songInfoContainer.setVisibility(View.VISIBLE);
-            binding.btnClose.setVisibility(View.VISIBLE);
-            binding.btnPip.setVisibility(View.VISIBLE);
-            // btnOpenYoutube logic is handled by setupPlayer/state, so don't blindly show
-            // it
-            updateVisualizerState(isPlaying);
-
-            // Restore Margin (32dp approx 84px - using resource or converting would be
-            // better but hardcoded matches XML for now)
-            params.topMargin = (int) android.util.TypedValue.applyDimension(
-                    android.util.TypedValue.COMPLEX_UNIT_DIP, 32, getResources().getDisplayMetrics());
-            binding.playerContainer.setLayoutParams(params);
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -1211,18 +1062,40 @@ public class MusicPlayerActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            setPictureInPictureParams(new android.app.PictureInPictureParams.Builder()
-                    .setAutoEnterEnabled(true)
-                    .build());
+        // Strict Resume Logic: Since there is no Play button, we AUTO-PLAY on resume.
+        // This ensures if the user backgrounds the app (pausing it), coming back
+        // resumes it.
+        // Unless invalid state.
+        if (videoIds != null && !videoIds.isEmpty()) {
+            if (!isPlaying) {
+                playVideo();
+            } else {
+                // Already playing (maybe PiP or Multi-Window not stopped?)
+                updateVisualizerState(true);
+            }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Bulletproof: Ensure audio stops when app goes to background (since PiP is
+        // removed)
+        // Native player LifecycleObserver handles it usually, but explicit pause is
+        // safer.
+        if (currentPlayer != null)
+            currentPlayer.pause();
+        if (webView != null) {
+            webView.evaluateJavascript("var v = document.querySelector('video'); if(v) v.pause();", null);
+        }
+        abandonAudioFocus(); // Release Focus when backgrounded
     }
 
     @Override
     protected void onDestroy() {
         try {
             // stopWatchdog(); // REMOVED
-            unregisterReceiver(pipReceiver);
+
         } catch (Exception e) {
         }
 

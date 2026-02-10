@@ -166,29 +166,73 @@ public class SettingsViewModel extends AndroidViewModel {
         });
     }
 
+    public enum UploadState {
+        IDLE,
+        UPLOADING,
+        SUCCESS,
+        ERROR
+    }
+
+    private final MutableLiveData<UploadState> uploadState = new MutableLiveData<>(UploadState.IDLE);
+
+    public LiveData<UploadState> getUploadState() {
+        return uploadState;
+    }
+
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
     public void uploadAvatar(Uri imageUri) {
         if (currentUserId == null || imageUri == null)
             return;
 
-        final StorageReference ref = storage.getReference().child("avatars/" + currentUserId + ".jpg");
-        ref.putFile(imageUri).continueWithTask(task -> {
-            if (!task.isSuccessful())
-                throw task.getException();
-            return ref.getDownloadUrl();
-        }).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Uri downloadUri = task.getResult();
-                updateAvatarUrl(downloadUri.toString());
-            } else {
-                Log.e(TAG, "Avatar upload failed", task.getException());
-            }
-        });
+        uploadState.setValue(UploadState.UPLOADING);
+
+        // Use Cloudinary MediaManager (initialized in Application class)
+        com.cloudinary.android.MediaManager.get().upload(imageUri)
+                .unsigned("foreverus_memories")
+                .option("resource_type", "image")
+                .callback(new com.cloudinary.android.callback.UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) {
+                    }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {
+                    }
+
+                    @Override
+                    public void onSuccess(String requestId, java.util.Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        updateAvatarUrl(url);
+                    }
+
+                    @Override
+                    public void onError(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+                        Log.e(TAG, "Avatar upload failed: " + error.getDescription());
+                        errorMessage.postValue("Upload failed: " + error.getDescription());
+                        uploadState.postValue(UploadState.ERROR);
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+                    }
+                })
+                .dispatch();
     }
 
     private void updateAvatarUrl(String url) {
         db.collection(COLLECTION_USERS).document(currentUserId)
                 .update(FIELD_AVATAR_URL, url)
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to update avatar URL", e));
+                .addOnSuccessListener(aVoid -> uploadState.postValue(UploadState.SUCCESS))
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to update avatar URL", e);
+                    errorMessage.postValue("Failed to update profile: " + e.getMessage());
+                    uploadState.postValue(UploadState.ERROR);
+                });
     }
 
     @Override

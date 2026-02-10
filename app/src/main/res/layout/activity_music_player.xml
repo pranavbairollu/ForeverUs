@@ -66,9 +66,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:fontFamily="sans-serif-medium"
-            android:textStyle="bold"
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-black"
+            android:letterSpacing="-0.02"
             android:gravity="center"
             tools:text="Song Title"/>
 
@@ -76,9 +76,13 @@
             android:id="@+id/playerSongArtist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="#B3FFFFFF"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:layout_marginTop="4dp"
+            android:textColor="#CCFFFFFF"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:gravity="center"
             tools:text="Artist Name"/>
 
         <TextView
@@ -127,12 +131,12 @@
             <View android:layout_width="16dp" android:layout_height="0dp"/>
             
             <ImageButton
-                 android:id="@+id/btnPlayPause"
+                 android:id="@+id/btnShare"
                  android:layout_width="72dp"
                  android:layout_height="72dp"
                  android:background="?attr/selectableItemBackgroundBorderless"
-                 android:src="@drawable/ic_baseline_pause_24"
-                 android:contentDescription="Play/Pause"
+                 android:src="@drawable/ic_share"
+                 android:contentDescription="Share Song"
                  android:tint="@android:color/white"
                  android:scaleType="fitCenter"
                  android:padding="16dp"/>
@@ -183,7 +187,7 @@
         android:id="@+id/btnClose"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_baseline_arrow_back_24"
@@ -200,18 +204,6 @@
         android:background="@drawable/scrim_top"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnPip"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_picture_in_picture_24"
-        android:contentDescription="@string/cd_enter_pip"
-        android:tint="@android:color/white"
-        android:elevation="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,7 +58,7 @@
         <activity
             android:name=".MusicPlayerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
-            android:supportsPictureInPicture="true"
+
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity

@@ -36,16 +36,29 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <!-- User Avatar -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/ivUserAvatar"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/ic_baseline_person_24"
-                        android:scaleType="centerCrop"
-                        android:background="@color/white"
-                        android:padding="2dp"
-                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+                    <!-- User Avatar Container -->
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/ivUserAvatar"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@drawable/ic_baseline_person_24"
+                            android:scaleType="centerCrop"
+                            android:background="@color/white"
+                            android:padding="2dp"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+                            
+                        <ProgressBar
+                            android:id="@+id/pbAvatarUpload"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:indeterminateTint="?attr/colorPrimary" />
+                    </FrameLayout>
 
                     <!-- Heart Icon -->
                     <ImageView

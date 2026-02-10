@@ -27,6 +27,20 @@ public class RegisterActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
+    private android.net.Uri selectedImageUri;
+
+    private final androidx.activity.result.ActivityResultLauncher<String> pickImageLauncher = registerForActivityResult(
+            new androidx.activity.result.contract.ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    selectedImageUri = uri;
+                    com.bumptech.glide.Glide.with(this)
+                            .load(uri)
+                            .circleCrop()
+                            .into((android.widget.ImageView) findViewById(R.id.ivAvatar));
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(ThemeManager.getThemeResId(this));
@@ -37,8 +51,31 @@ public class RegisterActivity extends BaseActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        // Setup Avatar Click
+        findViewById(R.id.ivAvatar).setOnClickListener(v -> pickImageLauncher.launch("image/*"));
+        findViewById(R.id.tvAddPhoto).setOnClickListener(v -> pickImageLauncher.launch("image/*"));
+
         binding.btnRegister.setOnClickListener(v -> validateAndRegisterUser());
         binding.btnLogin.setOnClickListener(v -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
+
+        if (savedInstanceState != null) {
+            String uriString = savedInstanceState.getString("selectedImageUri");
+            if (uriString != null) {
+                selectedImageUri = android.net.Uri.parse(uriString);
+                com.bumptech.glide.Glide.with(this)
+                        .load(selectedImageUri)
+                        .circleCrop()
+                        .into((android.widget.ImageView) findViewById(R.id.ivAvatar));
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@androidx.annotation.NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (selectedImageUri != null) {
+            outState.putString("selectedImageUri", selectedImageUri.toString());
+        }
     }
 
     private void validateAndRegisterUser() {
@@ -101,28 +138,85 @@ public class RegisterActivity extends BaseActivity {
                         Log.d(TAG, "createUserWithEmail:success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            saveUserToFirestore(user, name, email);
+                            if (selectedImageUri != null) {
+                                uploadAvatarAndSaveUser(user, name, email);
+                            } else {
+                                saveUserToFirestore(user, name, email, null);
+                            }
                         }
                     } else {
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
                         Exception exception = task.getException();
                         if (exception instanceof FirebaseAuthWeakPasswordException) {
-                            Toast.makeText(RegisterActivity.this, R.string.password_too_weak, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, R.string.password_too_weak, Toast.LENGTH_SHORT)
+                                    .show();
                         } else if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-                            Toast.makeText(RegisterActivity.this, R.string.invalid_email_format, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, R.string.invalid_email_format, Toast.LENGTH_SHORT)
+                                    .show();
                         } else if (exception instanceof FirebaseAuthUserCollisionException) {
-                            Toast.makeText(RegisterActivity.this, R.string.email_already_registered, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, R.string.email_already_registered, Toast.LENGTH_SHORT)
+                                    .show();
                         } else {
-                            Toast.makeText(RegisterActivity.this, R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, R.string.authentication_failed, Toast.LENGTH_SHORT)
+                                    .show();
                         }
                         setLoading(false);
                     }
                 });
     }
 
-    private void saveUserToFirestore(FirebaseUser firebaseUser, String name, String email) {
+    private void initCloudinary() {
+        try {
+            com.cloudinary.android.MediaManager.get();
+        } catch (IllegalStateException e) {
+            java.util.Map<String, Object> config = new java.util.HashMap<>();
+            config.put("cloud_name", "dsuwyan5m");
+            config.put("secure", true);
+            com.cloudinary.android.MediaManager.init(getApplication(), config);
+        }
+    }
+
+    private void uploadAvatarAndSaveUser(FirebaseUser user, String name, String email) {
+        initCloudinary();
+
+        com.cloudinary.android.MediaManager.get().upload(selectedImageUri)
+                .unsigned("foreverus_memories")
+                .option("resource_type", "image")
+                .callback(new com.cloudinary.android.callback.UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) {
+                    }
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {
+                    }
+
+                    @Override
+                    public void onSuccess(String requestId, java.util.Map resultData) {
+                        String url = (String) resultData.get("secure_url");
+                        saveUserToFirestore(user, name, email, url);
+                    }
+
+                    @Override
+                    public void onError(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+                        Log.e(TAG, "Avatar upload failed: " + error.getDescription());
+                        // Proceed without avatar if upload fails
+                        saveUserToFirestore(user, name, email, null);
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, com.cloudinary.android.callback.ErrorInfo error) {
+                    }
+                })
+                .dispatch();
+    }
+
+    private void saveUserToFirestore(FirebaseUser firebaseUser, String name, String email, String avatarUrl) {
         String userId = firebaseUser.getUid();
         User user = new User(name, email);
+        if (avatarUrl != null) {
+            user.setAvatarUrl(avatarUrl);
+        }
 
         db.collection(COLLECTION_USERS).document(userId)
                 .set(user)
@@ -142,7 +236,8 @@ public class RegisterActivity extends BaseActivity {
                         }
                     });
                     mAuth.signOut();
-                    Toast.makeText(RegisterActivity.this, R.string.error_creating_user_profile, Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegisterActivity.this, R.string.error_creating_user_profile, Toast.LENGTH_LONG)
+                            .show();
                     setLoading(false);
                 });
     }
@@ -155,5 +250,7 @@ public class RegisterActivity extends BaseActivity {
         binding.etConfirmPassword.setEnabled(!isLoading);
         binding.btnRegister.setEnabled(!isLoading);
         binding.btnLogin.setEnabled(!isLoading);
+        findViewById(R.id.ivAvatar).setEnabled(!isLoading);
+        findViewById(R.id.tvAddPhoto).setEnabled(!isLoading);
     }
 }
