@@ -155,7 +155,8 @@ public class MusicPlayerActivity extends BaseActivity {
         }
 
         setupUI();
-        setupPlayer();
+        // setupPlayer(); // DISABLE NATIVE PLAYER INIT to prevent race conditions
+        loadCurrentSong(); // Direct load for WebView
     }
 
     @Override
@@ -817,6 +818,10 @@ public class MusicPlayerActivity extends BaseActivity {
             @Override
             public void onStateChange(@NonNull YouTubePlayer youTubePlayer,
                     @NonNull com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState state) {
+                // FORCE WEBVIEW CHECK: If WebView is active, IGNORE all native events
+                if (binding.fallbackWebView.getVisibility() == View.VISIBLE)
+                    return;
+
                 if (state == com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerState.ENDED) {
                     consecutiveErrors = 0;
                     updateVisualizerState(false);
@@ -842,31 +847,23 @@ public class MusicPlayerActivity extends BaseActivity {
                     // Buffering or Unknown: Keep isPlaying state or assume playing if we were
                     // playing
                     // Do NOT stop visualizer here to ensure it "keeps playing" visually if possible
-                    // isPlaying = false; // Commented out to prevent state flicker
-                    // updateVisualizerState(false); // REMOVED: Keep visualizer active
                     updateControlsUI();
                 }
             }
 
-            @Override
             public void onError(@NonNull YouTubePlayer youTubePlayer,
                     @NonNull com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerError error) {
                 super.onError(youTubePlayer, error);
-                updateVisualizerState(false);
 
-                if (error == com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerError.VIDEO_NOT_PLAYABLE_IN_EMBEDDED_PLAYER) {
-                    playEffectivelyWithWebView();
+                // FORCE WEBVIEW CHECK: If WebView is active, IGNORE all native events
+                if (binding.fallbackWebView.getVisibility() == View.VISIBLE)
                     return;
-                }
 
-                if (consecutiveErrors < 3) {
-                    consecutiveErrors++;
-                    showStatus("Skipping unavailable song...");
-                    playNextSong();
-                } else {
-                    showStatus("Playback stopped: Too many errors.");
-                    consecutiveErrors = 0;
-                }
+                // Bulletproof: If Native Player fails for ANY reason (Restricted, Parameter,
+                // Invalid, Unknown, HTML5),
+                // ALWAYS try the WebView fallback first. This is safer than skipping.
+                updateVisualizerState(false);
+                playEffectivelyWithWebView();
             }
         }, true, options);
     }
@@ -952,11 +949,10 @@ public class MusicPlayerActivity extends BaseActivity {
             binding.statusMessageText.setVisibility(View.GONE);
         }
 
-        // Reset to Native preferred
-        showNativePlayer();
+        // Reset to Native preferred -- DISABLED
+        // showNativePlayer();
 
-        if (currentPlayer == null)
-            return;
+        // if (currentPlayer == null) return; // REMOVED checking for native player
 
         // Safety Check: Empty List
         if (videoIds == null || videoIds.isEmpty()) {
@@ -980,7 +976,8 @@ public class MusicPlayerActivity extends BaseActivity {
             if (vid != null && !vid.isEmpty()) {
                 binding.btnOpenYoutube.setVisibility(View.GONE);
 
-                // Smart Logic: Try to extract ID. If we have ID, use Native. If not, use Web.
+                // Smart Logic: Try to extract ID for background color, BUT ALWAYS USE WEBVIEW
+                // for playback
                 String extractedId = SongAdapter.extractVideoId(vid);
 
                 // Update Background Dynamic
@@ -990,37 +987,10 @@ public class MusicPlayerActivity extends BaseActivity {
                     updateDynamicBackground(vid);
                 }
 
-                if (extractedId != null) {
-                    // Check if it's likely a valid ID (11 chars) just to be sure
-                    if (extractedId.length() == 11) {
-                        float startTime = currentVideoTime;
-                        if (Float.isNaN(startTime) || startTime < 0)
-                            startTime = 0f;
-
-                        currentPlayer.loadVideo(extractedId, startTime);
-                        currentPlayer.unMute(); // Strict: Ensure unmute on new video load
-                        isMuted = false; // Strict: Reset internal state
-                        setupUI();
-                        return;
-                    }
-                }
-
-                // Fallback to Web if extraction failed but we have a URL string
-                if (vid.startsWith("http")) {
-                    playEffectivelyWithWebView();
-                    setupUI();
-                } else {
-                    // Last attempt: maybe it IS an ID but extractVideoId failed for some reason?
-                    // Or it's garbage. Try Native as last resort if it looks like ID.
-                    if (vid.matches("[a-zA-Z0-9_-]{11}")) {
-                        currentPlayer.loadVideo(vid, currentVideoTime);
-                        currentPlayer.unMute(); // Strict: Ensure unmute
-                        isMuted = false; // Strict: Reset internal state
-                        setupUI();
-                    } else {
-                        playNextSong(); // Skip invalid
-                    }
-                }
+                // FORCE WEBVIEW PLAYBACK (User Request: Native player never works)
+                playEffectivelyWithWebView();
+                setupUI();
+                return;
             } else {
                 playNextSong(); // Skip invalid
             }
