@@ -288,6 +288,63 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Support & Guide Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_glass_card"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/headerSupport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_support_title"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGuide"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/settings_guide"
+                    android:textColor="?android:attr/textColorPrimary"
+                    app:icon="@drawable/ic_baseline_help_outline_24"
+                    app:iconTint="?android:attr/textColorPrimary"
+                    android:gravity="start|center_vertical"
+                    app:layout_constraintTop_toBottomOf="@id/headerSupport"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFeedback"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_feedback"
+                    android:textColor="?android:attr/textColorPrimary"
+                    app:icon="@drawable/ic_baseline_email_24"
+                    app:iconTint="?android:attr/textColorPrimary"
+                    android:gravity="start|center_vertical"
+                    app:layout_constraintTop_toBottomOf="@id/btnGuide"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAbout"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_about"
+                    android:textColor="?android:attr/textColorPrimary"
+                    app:icon="@drawable/ic_baseline_info_24"
+                    app:iconTint="?android:attr/textColorPrimary"
+                    android:gravity="start|center_vertical"
+                    app:layout_constraintTop_toBottomOf="@id/btnFeedback"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <!-- Danger Zone Card -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

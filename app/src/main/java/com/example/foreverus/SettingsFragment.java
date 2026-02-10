@@ -112,6 +112,31 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
         binding.unpairButton.setOnClickListener(v -> showUnpairConfirmationDialog());
         binding.testNotificationButton.setOnClickListener(v -> sendTestNotification());
 
+        // Support Buttons (using SafeClickListener for debounce)
+        binding.btnGuide.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                if (isAdded())
+                    startActivity(new Intent(requireContext(), GuideActivity.class));
+            }
+        });
+
+        binding.btnFeedback.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                if (isAdded())
+                    sendFeedback();
+            }
+        });
+
+        binding.btnAbout.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                if (isAdded())
+                    showAboutDialog();
+            }
+        });
+
         // Fix: Enable Back Navigation
         binding.toolbar
                 .setNavigationOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigateUp());
@@ -480,6 +505,12 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
         String nickname = binding.coupleNicknameEditText.getText().toString().trim();
 
         if (relationshipId != null && !nickname.isEmpty()) {
+            // Check if changed to avoid spamming updates/toasts
+            String currentSaved = settingsViewModel.getPartnerNickname().getValue();
+            if (currentSaved != null && currentSaved.equals(nickname)) {
+                return;
+            }
+
             settingsViewModel.updateNickname(relationshipId, nickname, success -> {
                 if (!isAdded())
                     return;
@@ -521,5 +552,46 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
                 Toast.makeText(requireContext(), "Permission Missing!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void sendFeedback() {
+        // Use a more specific URI to ensure it targets email apps
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:pranavbairollu@gmail.com"));
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_subject));
+
+        // Add device info for better support
+        String deviceInfo = "\n\n\n--- Device Info ---\n" +
+                "App Version: " + BuildConfig.VERSION_NAME + "\n" +
+                "Device: " + android.os.Build.MODEL + " (" + android.os.Build.VERSION.RELEASE + ")";
+        intent.putExtra(Intent.EXTRA_TEXT, deviceInfo);
+
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            if (isAdded()) {
+                Toast.makeText(requireContext(), "No email client installed.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void showAboutDialog() {
+        if (!isAdded())
+            return;
+
+        String versionName = "1.0";
+        try {
+            android.content.pm.PackageInfo pInfo = requireContext().getPackageManager()
+                    .getPackageInfo(requireContext().getPackageName(), 0);
+            versionName = pInfo.versionName;
+        } catch (android.content.pm.PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.about_title)
+                .setMessage(getString(R.string.about_message, versionName))
+                .setPositiveButton(R.string.ok, null)
+                .show();
     }
 }

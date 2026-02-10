@@ -417,4 +417,48 @@
     <string name="cd_delete_song">Delete song</string>
     <string name="undo">Undo</string>
     <string name="shuffle_play_content_description">Shuffle Play</string>
+
+    <!-- Support & Guide Strings -->
+    <string name="settings_support_title">Support &amp; Guide</string>
+    <string name="settings_guide">How to Use ForeverUs</string>
+    <string name="settings_feedback">Send Feedback</string>
+    <string name="settings_about">About Us</string>
+    
+    <string name="guide_title">How to Use ForeverUs</string>
+    <string name="guide_subtitle">Welcome to ForeverUs! Here\'s how to make the most of your shared space.</string>
+    
+    <string name="feedback_subject">Feedback for ForeverUs</string>
+    <string name="about_title">About ForeverUs</string>
+    <string name="about_message">Version %1$s\n\nForeverUs is designed to help couples cherish their memories.\n\n© 2026 ForeverUs Team</string>
+    
+    <!-- Guide Topics -->
+    <string name="guide_topic_memories">📸 Memories</string>
+    <string name="guide_desc_memories">Your shared gallery for precious moments.\n\n• Tap + to upload photos or videos.\n• Tap a photo to view it in full screen.\n• Long-press to delete unwanted items.\n• All media is synced instantly with your partner.</string>
+    
+    <string name="guide_topic_letters">💌 Letters</string>
+    <string name="guide_desc_letters">Send surprise messages to the future.\n\n• Write a heartfelt note today.\n• Set a delivery date (e.g., next anniversary).\n• Your partner receives a notification but can only open it when the date arrives!\n• Perfect for birthdays and milestones.</string>
+    
+    <string name="guide_topic_music">🎵 Music Player</string>
+    <string name="guide_desc_music">Your couple\'s shared soundtrack.\n\n• Paste YouTube video links to add songs.\n• Features background play, shuffle, and repeat modes.\n• Organize your favorite tracks together.</string>
+    
+    <string name="guide_topic_timeline">⏳ Timeline</string>
+    <string name="guide_desc_timeline">A journey through time.\n\n• View your relationship milestones in chronological order.\n• Scroll back to see how far you\'ve come together.</string>
+    
+    <string name="guide_topic_story">📖 Our Story</string>
+    <string name="guide_desc_story">Co-write your unique love story.\n\n• Add chapters with titles and content.\n• Both of you can edit and contribute.\n• A digital book of your relationship.</string>
+
+    <string name="guide_topic_adventure">✈️ Adventure Board</string>
+    <string name="guide_desc_adventure">Your shared bucket list.\n\n• Add goals, trips, and dreams.\n• Set target dates and estimated costs.\n• Drag and drop to reorder priorities.\n• Mark items as \'Complete\' to celebrate with confetti!</string>
+
+    <string name="guide_topic_polaroid">🖼️ Polaroid Maker</string>
+    <string name="guide_desc_polaroid">Create vintage-style keepsakes.\n\n• Choose a photo from your gallery.\n• Apply filters (Sepia, B&amp;W), frames, and retro effects (Light Leak, Dust).\n• Add a caption and date stamp.\n• Watch it \'develop\' before your eyes!</string>
+
+    <string name="guide_topic_spinner">🎡 Decision Spinner</string>
+    <string name="guide_desc_spinner">Resolve playful disputes easily.\n\n• Create custom lists (e.g., \'Dinner Place\', \'Who Pays?\').\n• Spin the wheel to get a random result.\n• Saves your custom lists for future use.</string>
+
+    <string name="guide_topic_dates">📅 Special Dates</string>
+    <string name="guide_desc_dates">Never miss a moment.\n\n• Add birthdays, anniversaries, and monthly milestones.\n• Receive notifications on the day of the event.\n• Swipe to delete old dates.</string>
+
+    <string name="guide_topic_profile">👤 Profile &amp; Settings</string>
+    <string name="guide_desc_profile">Make it yours.\n\n• Change your nickname and avatar.\n• Customize the app theme (Light/Dark).\n• Access support and feedback here.</string>
 </resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    style="@style/Widget.Material3.CardView.Outlined"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:animateLayoutChanges="true"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="16dp"
+    app:strokeColor="@color/scrim_white_50"
+    app:strokeWidth="1dp">
+
+    <!-- Glass Background -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_glass_card"
+        android:alpha="0.8"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iconImageView"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                app:tint="?attr/colorPrimary"
+                tools:src="@drawable/ic_baseline_photo_library_24" />
+
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"
+                tools:text="Memories" />
+
+            <ImageView
+                android:id="@+id/arrowImageView"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                android:rotation="270"
+                app:tint="?android:attr/textColorSecondary" />
+                <!-- 270 rotation makes back arrow point down. 
+                     Wait, back points left. 
+                     -90 (270) points down? 
+                     Left is 180 from right.
+                     Standard arrow is typically 'back' <- 
+                     Rotate -90 -> Down? No, Left rotated -90 is Down? 
+                     Let's assume we'll control rotation in code relative to a base state.
+                     If I use ic_baseline_arrow_back_24:
+                     0 deg = Points Left (<)
+                     180 deg = Points Right (>)
+                     270 deg (-90) = Points Down (v)
+                     90 deg = Points Up (^)
+                     
+                     I want collapsed: Points Right (>) or Down (v)? 
+                     Usually collapsed is Right (>), expanded is Down (v).
+                     So Initial (Collapsed): Rotation 180 (Points Right >)
+                     Expanded: Rotation 270 (Points Down v)
+                     
+                     Let's check if there is a 'chevron' or 'expand_more'.
+                     I saw 'ic_baseline_arrow_back_24'.
+                     I will rely on rotation in adapter.
+                -->
+
+        </LinearLayout>
+
+        <!-- Body (Description) -->
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="40dp" 
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            android:visibility="gone"
+            tools:text="Upload photos and videos to your shared gallery. Tap the + button to add new moments."
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -72,6 +72,8 @@
             android:theme="@style/Theme.ForeverUs.NoActionBar" />
         <activity android:name=".ManageSpinnerListsActivity"
             android:theme="@style/Theme.ForeverUs.NoActionBar" />
+        <activity android:name=".GuideActivity"
+            android:theme="@style/Theme.ForeverUs.NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
