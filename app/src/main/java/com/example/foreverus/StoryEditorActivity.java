@@ -142,6 +142,14 @@ public class StoryEditorActivity extends BaseActivity implements StoryAppearance
 
         storyEditorViewModel.init(relationshipId, storyId);
 
+        undoRedoHelper = new UndoRedoHelper(binding.storyContentEditText,
+                storyEditorViewModel.getUndoHistory(),
+                storyEditorViewModel.getRedoHistory());
+
+        if (savedInstanceState != null) {
+            undoRedoHelper.restoreState(savedInstanceState);
+        }
+
         setupObservers();
         restoreAppearancePreferences();
         setupTextWatchers();
@@ -149,10 +157,7 @@ public class StoryEditorActivity extends BaseActivity implements StoryAppearance
         setupAiConfirmation();
         setupFormattingToolbar();
         setupOnBackPressed();
-        undoRedoHelper = new UndoRedoHelper(binding.storyContentEditText);
         if (savedInstanceState != null) {
-            undoRedoHelper.restoreState(savedInstanceState);
-
             // Restore AI Variables
             lastAiPrompt = savedInstanceState.getString("lastAiPrompt");
             lastAiActionType = savedInstanceState.getString("lastAiActionType");
@@ -524,9 +529,17 @@ public class StoryEditorActivity extends BaseActivity implements StoryAppearance
             // Actually, best fix is:
 
             if (story.getContent().contains("<") && story.getContent().contains(">")) {
+                if (undoRedoHelper != null)
+                    undoRedoHelper.setEnabled(false);
                 binding.storyContentEditText.setText(deserializeHtml(story.getContent()));
+                if (undoRedoHelper != null)
+                    undoRedoHelper.setEnabled(true);
             } else {
+                if (undoRedoHelper != null)
+                    undoRedoHelper.setEnabled(false);
                 binding.storyContentEditText.setText(story.getContent());
+                if (undoRedoHelper != null)
+                    undoRedoHelper.setEnabled(true);
             }
         }
         updateTimestampAndEditor(story.getLastEditedBy(), story.getTimestamp());

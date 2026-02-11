@@ -39,6 +39,10 @@ public class StoryEditorViewModel extends AndroidViewModel {
     private String storyId;
     private String currentUserId;
 
+    // Persistent Undo/Redo History for Rotation
+    private final java.util.LinkedList<UndoRedoHelper.EditItem> undoHistory = new java.util.LinkedList<>();
+    private final java.util.LinkedList<UndoRedoHelper.EditItem> redoHistory = new java.util.LinkedList<>();
+
     public StoryEditorViewModel(Application application, SavedStateHandle savedStateHandle) {
         super(application);
         this.savedStateHandle = savedStateHandle;
@@ -325,6 +329,14 @@ public class StoryEditorViewModel extends AndroidViewModel {
 
     public String getCurrentUserId() {
         return currentUserId;
+    }
+
+    public java.util.LinkedList<UndoRedoHelper.EditItem> getUndoHistory() {
+        return undoHistory;
+    }
+
+    public java.util.LinkedList<UndoRedoHelper.EditItem> getRedoHistory() {
+        return redoHistory;
     }
 
     private long getLocalStoryVersion() {
