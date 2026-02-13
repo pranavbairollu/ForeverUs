@@ -108,8 +108,26 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        if (password.length() < 6) {
-            binding.etPassword.setError(getString(R.string.password_min_length));
+        if (password.length() < 8) {
+            binding.etPassword.setError(getString(R.string.password_min_length_8));
+            binding.etPassword.requestFocus();
+            return;
+        }
+
+        if (!java.util.regex.Pattern.compile("[0-9]").matcher(password).find()) {
+            binding.etPassword.setError(getString(R.string.password_must_contain_digit));
+            binding.etPassword.requestFocus();
+            return;
+        }
+
+        if (!java.util.regex.Pattern.compile("[A-Z]").matcher(password).find()) {
+            binding.etPassword.setError(getString(R.string.password_must_contain_uppercase));
+            binding.etPassword.requestFocus();
+            return;
+        }
+
+        if (!java.util.regex.Pattern.compile("[!@#$%^&*(),.?\":{}|<>]").matcher(password).find()) {
+            binding.etPassword.setError(getString(R.string.password_must_contain_special));
             binding.etPassword.requestFocus();
             return;
         }

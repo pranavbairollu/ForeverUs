@@ -169,6 +169,8 @@
                         app:boxCornerRadiusBottomStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"
                         app:boxCornerRadiusTopStart="12dp"
+                        app:helperText="@string/password_requirements_helper"
+                        app:helperTextTextColor="@android:color/darker_gray"
                         app:passwordToggleEnabled="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

@@ -183,7 +183,12 @@
     <string name="password_required">Password is required</string>
     <string name="password_min_length">Password must be at least 6 characters</string>
     <string name="confirm_password_required">Confirm Password is required</string>
+    <string name="password_requirements_helper">8+ chars · 1 Upper · 1 Digit · 1 Special (@#$%)</string>
     <string name="password_too_weak">Password is too weak</string>
+    <string name="password_min_length_8">Password must be at least 8 characters</string>
+    <string name="password_must_contain_digit">Password must contain at least one digit</string>
+    <string name="password_must_contain_uppercase">Password must contain at least one uppercase letter</string>
+    <string name="password_must_contain_special">Password must contain at least one special character</string>
     <string name="invalid_email_format">Invalid email format</string>
     <string name="email_already_registered">Email is already registered</string>
     <string name="authentication_failed">Authentication failed.</string>

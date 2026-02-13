@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- HELPER FUNCTIONS ---
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user is accessing their own document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if the update is only modifying pairing-related fields (for the partner)
+    function isPairingUpdate() {
+      return isAuthenticated() && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['relationshipId', 'pairingCode']);
+    }
+
+    // Check if user is a member of the relationship they are accessing
+    function isRelationshipMember(relationshipId) {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/relationships/$(relationshipId)) &&
+        (request.auth.uid in get(/databases/$(database)/documents/relationships/$(relationshipId)).data.members);
+    }
+
+    // Check if user is creating a valid relationship with themselves included
+    function creatingValidRelationship() {
+      return isAuthenticated() && 
+        request.resource.data.keys().hasAll(['members', 'createdAt']) &&
+        request.resource.data.members.size() == 2 &&
+        (request.auth.uid in request.resource.data.members);
+    }
+
+    // --- RULES ---
+
+    // USERS COLLECTION
+    // Read: Authenticated users (needed for searching partners by code)
+    // Create/Delete: Owner only
+    // Update: Owner OR special case for pairing (where one user updates the partner's doc)
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create, delete: if isOwner(userId);
+      allow update: if isOwner(userId) || isPairingUpdate();
+    }
+
+    // RELATIONSHIPS COLLECTION
+    // Create: Allowed if user includes themselves in 'members'
+    // Read/Update/Delete: Allowed if user is in 'members' list
+    match /relationships/{relationshipId} {
+      allow create: if creatingValidRelationship();
+      allow read, update, delete: if isAuthenticated() && (request.auth.uid in resource.data.members);
+
+      // SUBCOLLECTIONS (Inherit access from parent relationship)
+      match /{document=**} {
+        allow read, write: if isRelationshipMember(relationshipId);
+      }
+    }
+  }
+}
