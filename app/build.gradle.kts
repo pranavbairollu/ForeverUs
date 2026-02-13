@@ -38,7 +38,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -120,7 +121,7 @@ dependencies {
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     // Compressor
-    implementation("id.zelory:compressor:2.1.1")
+    implementation("id.zelory:compressor:3.0.1")
 
     // YouTube Data API (⚠ pulls old gRPC → force latest gRPC)
     implementation("com.google.apis:google-api-services-youtube:v3-rev20240417-2.0.0")

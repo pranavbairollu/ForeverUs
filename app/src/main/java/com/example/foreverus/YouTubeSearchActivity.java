@@ -3,6 +3,7 @@ package com.example.foreverus;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -102,8 +103,15 @@ public class YouTubeSearchActivity extends BaseActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
+
+                // Security Check: Only allow YouTube and Google Account domains
+                if (!isAllowedUrl(url)) {
+                    // Block navigation
+                    return true;
+                }
+
                 if (checkUrlForVideo(url, view.getTitle())) {
-                    return true; // Handled
+                    return true; // Handled as video selection
                 }
                 return false; // Let WebView load it
             }
@@ -183,6 +191,23 @@ public class YouTubeSearchActivity extends BaseActivity {
             return true;
         }
         return false;
+    }
+
+    private boolean isAllowedUrl(String url) {
+        if (url == null)
+            return false;
+        Uri uri = Uri.parse(url);
+        String host = uri.getHost();
+        if (host == null)
+            return false;
+
+        // Allow YouTube domains
+        return host.equals("m.youtube.com") ||
+                host.equals("www.youtube.com") ||
+                host.equals("youtube.com") ||
+                host.equals("youtu.be") ||
+                host.endsWith(".youtube.com") || // consent.youtube.com, etc.
+                host.equals("accounts.google.com"); // Login
     }
 
     @Override

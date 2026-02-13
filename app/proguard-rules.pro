@@ -14,7 +14,11 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
@@ -37,3 +41,24 @@
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory { *; }
 -keepnames class kotlinx.coroutines.flow.** { *; }
 -keepclassmembers class ** { @kotlin.coroutines.jvm.internal.DebugMetadata *; }
+
+# Room
+-keep class androidx.room.RoomDatabase
+-keep class androidx.room.** { *; }
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-keep @androidx.room.Database class *
+-keep @androidx.room.Dao class *
+
+# ViewModel
+-keepclassmembers class * extends androidx.lifecycle.ViewModel {
+    <init>(...);
+}
+
+# Google API Client
+-keep class com.google.api.client.** { *; }
+-keep class com.google.api.services.youtube.** { *; }
+
+# Custom Models (Keep your data classes)
+-keep class com.example.foreverus.** { *; }
+
