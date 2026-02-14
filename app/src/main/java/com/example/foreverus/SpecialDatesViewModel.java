@@ -19,14 +19,15 @@ public class SpecialDatesViewModel extends AndroidViewModel {
         super(application);
         repository = new SpecialDateRepository(application);
         specialDates = Transformations.map(
-            Transformations.switchMap(relationshipIdLiveData, id -> repository.getAllSpecialDates(id)),
-            list -> {
-                if (list != null) {
-                    java.util.Collections.sort(list);
-                }
-                return list;
-            }
-        );
+                Transformations.switchMap(relationshipIdLiveData, id -> repository.getAllSpecialDates(id)),
+                list -> {
+                    if (list != null) {
+                        List<SpecialDate> sortedList = new java.util.ArrayList<>(list);
+                        java.util.Collections.sort(sortedList);
+                        return sortedList;
+                    }
+                    return list;
+                });
         firestoreError = repository.getFirestoreError();
     }
 

@@ -8,6 +8,7 @@ import java.util.Objects;
 public abstract class TimelineItem {
 
     public abstract String getId();
+
     public abstract long getTimestamp();
 
     public static class StoryItem extends TimelineItem {
@@ -33,8 +34,10 @@ public abstract class TimelineItem {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             StoryItem storyItem = (StoryItem) o;
             return Objects.equals(story, storyItem.story);
         }
@@ -65,10 +68,13 @@ public abstract class TimelineItem {
         public long getTimestamp() {
             return memory.getTimestamp() != null ? memory.getTimestamp().toDate().getTime() : 0;
         }
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             MemoryItem that = (MemoryItem) o;
             return Objects.equals(memory, that.memory);
         }
@@ -99,10 +105,13 @@ public abstract class TimelineItem {
         public long getTimestamp() {
             return letter.getTimestamp() != null ? letter.getTimestamp().toDate().getTime() : 0;
         }
+
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             LetterItem that = (LetterItem) o;
             return Objects.equals(letter, that.letter);
         }
@@ -138,8 +147,10 @@ public abstract class TimelineItem {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             HeaderItem that = (HeaderItem) o;
             return Objects.equals(title, that.title) && timestamp == that.timestamp;
         }
@@ -147,6 +158,50 @@ public abstract class TimelineItem {
         @Override
         public int hashCode() {
             return Objects.hash(title, timestamp);
+        }
+    }
+
+    public static class FeaturedOnThisDay extends TimelineItem {
+        private final TimelineItem featuredItem;
+        private final int additionalMatchCount;
+
+        public FeaturedOnThisDay(TimelineItem featuredItem, int additionalMatchCount) {
+            this.featuredItem = featuredItem;
+            this.additionalMatchCount = additionalMatchCount;
+        }
+
+        public TimelineItem getFeaturedItem() {
+            return featuredItem;
+        }
+
+        public int getAdditionalMatchCount() {
+            return additionalMatchCount;
+        }
+
+        @Override
+        public String getId() {
+            return "featured_" + featuredItem.getId();
+        }
+
+        @Override
+        public long getTimestamp() {
+            return System.currentTimeMillis(); // Always show at top
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            FeaturedOnThisDay that = (FeaturedOnThisDay) o;
+            return additionalMatchCount == that.additionalMatchCount &&
+                    Objects.equals(featuredItem, that.featuredItem);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(featuredItem, additionalMatchCount);
         }
     }
 

@@ -10,7 +10,7 @@ public final class ThemeManager {
     private static final String PREFS_NAME = "app_preferences";
     public static final String KEY_THEME_COLOR = "selected_theme_color"; // Renamed for clarity, but using new key
     public static final String KEY_THEME_MODE = "selected_theme_mode";
-    
+
     // Legacy Key for Migration
     private static final String LEGACY_KEY_SELECTED_THEME = "selected_theme";
 
@@ -25,15 +25,16 @@ public final class ThemeManager {
     public static final String MODE_DARK = "DARK";
     public static final String MODE_SYSTEM = "SYSTEM";
 
-    private ThemeManager() {}
-    
+    private ThemeManager() {
+    }
+
     /**
      * Applies the selected theme mode (Light/Dark/System).
      * Call this in Application.onCreate() and BaseActivity.onCreate().
      */
     public static void applyTheme(Context context) {
         migrateLegacyTheme(context);
-        
+
         String mode = getThemeMode(context);
         switch (mode) {
             case MODE_LIGHT:
@@ -51,19 +52,25 @@ public final class ThemeManager {
 
     private static void migrateLegacyTheme(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        
+
         // 1. Check if we already migrated (Mode exists)
         if (prefs.contains(KEY_THEME_MODE)) {
-            return; 
+            return;
         }
 
         // 2. Check if legacy theme exists
         if (!prefs.contains(LEGACY_KEY_SELECTED_THEME)) {
             // New user or no prev selection -> Set Defaults
             prefs.edit()
-                .putString(KEY_THEME_MODE, MODE_SYSTEM)
-                .putString(KEY_THEME_COLOR, THEME_DEFAULT)
-                .apply();
+                    .putString(KEY_THEME_MODE, MODE_SYSTEM)
+                    .putString(KEY_THEME_COLOR, THEME_DEFAULT)
+                    .apply();
+            return;
+        }
+
+        // Defensive: Check if migration is needed but legacy key is somehow missing
+        // (redundant but safe)
+        if (!prefs.contains(LEGACY_KEY_SELECTED_THEME)) {
             return;
         }
 
@@ -92,10 +99,10 @@ public final class ThemeManager {
         }
 
         prefs.edit()
-            .putString(KEY_THEME_MODE, newMode)
-            .putString(KEY_THEME_COLOR, newColor)
-            .remove(LEGACY_KEY_SELECTED_THEME) // Cleanup
-            .apply();
+                .putString(KEY_THEME_MODE, newMode)
+                .putString(KEY_THEME_COLOR, newColor)
+                .remove(LEGACY_KEY_SELECTED_THEME) // Cleanup
+                .apply();
     }
 
     // --- GETTERS & SETTERS ---
@@ -107,13 +114,14 @@ public final class ThemeManager {
 
     public static String getThemeColor(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        // Fallback to legacy key if migration failed/skipped (shouldn't happen with applyTheme called first)
+        // Fallback to legacy key if migration failed/skipped (shouldn't happen with
+        // applyTheme called first)
         if (!prefs.contains(KEY_THEME_COLOR) && prefs.contains(LEGACY_KEY_SELECTED_THEME)) {
-             return prefs.getString(LEGACY_KEY_SELECTED_THEME, THEME_DEFAULT);
+            return prefs.getString(LEGACY_KEY_SELECTED_THEME, THEME_DEFAULT);
         }
         return prefs.getString(KEY_THEME_COLOR, THEME_DEFAULT);
     }
-    
+
     public static void setThemeMode(Context context, String mode) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString(KEY_THEME_MODE, mode).apply();
@@ -126,7 +134,7 @@ public final class ThemeManager {
 
     public static int getThemeResId(Context context) {
         String themeColor = getThemeColor(context);
-        
+
         switch (themeColor) {
             case THEME_PINK_DREAM:
                 return R.style.Theme_ForeverUs_PinkDream;

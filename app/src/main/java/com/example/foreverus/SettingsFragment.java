@@ -107,9 +107,26 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
             }
         });
 
-        binding.addSpecialDateButton.setOnClickListener(v -> checkPermissionsAndShowDialog());
-        binding.logoutButton.setOnClickListener(v -> showLogoutConfirmationDialog());
-        binding.unpairButton.setOnClickListener(v -> showUnpairConfirmationDialog());
+        binding.addSpecialDateButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                checkPermissionsAndShowDialog();
+            }
+        });
+
+        binding.logoutButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                showLogoutConfirmationDialog();
+            }
+        });
+
+        binding.unpairButton.setOnClickListener(new SafeClickListener() {
+            @Override
+            public void onSafeClick(View v) {
+                showUnpairConfirmationDialog();
+            }
+        });
         binding.testNotificationButton.setOnClickListener(v -> sendTestNotification());
 
         // Support Buttons (using SafeClickListener for debounce)
@@ -150,10 +167,20 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
                 saveNickname();
             }
         });
+
+        // Dynamic Title on Scroll
+        binding.settingsScrollView
+                .setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener) (v, scrollX,
+                        scrollY, oldScrollX, oldScrollY) -> {
+                    boolean shouldShowTitle = scrollY > 100; // Threshold
+                    binding.toolbar.setTitle(shouldShowTitle ? "Settings" : " ");
+                });
     }
 
     private void observeProfileData() {
         settingsViewModel.getUserAvatarUrl().observe(getViewLifecycleOwner(), url -> {
+            if (binding == null)
+                return;
             if (url != null && !url.isEmpty()) {
                 Glide.with(this)
                         .load(url)
@@ -165,6 +192,8 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
         });
 
         settingsViewModel.getPartnerAvatarUrl().observe(getViewLifecycleOwner(), url -> {
+            if (binding == null)
+                return;
             if (url != null && !url.isEmpty()) {
                 Glide.with(this)
                         .load(url)
@@ -176,6 +205,8 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
         });
 
         settingsViewModel.getDaysTogether().observe(getViewLifecycleOwner(), days -> {
+            if (binding == null)
+                return;
             binding.tvDaysCount.setText(days);
             // Pulse the heart
             android.view.animation.Animation pulse = android.view.animation.AnimationUtils
@@ -307,6 +338,8 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
 
     private void observeSpecialDates() {
         specialDatesViewModel.getSpecialDates().observe(getViewLifecycleOwner(), specialDates -> {
+            if (binding == null)
+                return;
             if (specialDates != null) {
                 specialDateAdapter.submitList(specialDates);
 
@@ -425,6 +458,9 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
     }
 
     private void unpair() {
+        if (!isAdded())
+            return;
+
         android.net.ConnectivityManager cm = (android.net.ConnectivityManager) requireContext()
                 .getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
         boolean isOnline = cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
@@ -444,6 +480,8 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
         DocumentReference relationshipRef = db.collection(COLLECTION_RELATIONSHIPS).document(relationshipId);
 
         relationshipRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (!isAdded())
+                return;
             if (!documentSnapshot.exists()) {
                 Toast.makeText(requireContext(), R.string.already_unpaired, Toast.LENGTH_SHORT).show();
                 logout();
@@ -473,9 +511,13 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
             }
 
             batch.commit().addOnSuccessListener(aVoid -> {
+                if (!isAdded())
+                    return;
                 Toast.makeText(requireContext(), R.string.unpaired_successfully, Toast.LENGTH_SHORT).show();
                 logout(); // Logout after successful unpairing
             }).addOnFailureListener(e -> {
+                if (!isAdded())
+                    return;
                 Log.e(TAG, "Error during unpairing commit", e);
                 Toast.makeText(requireContext(), R.string.failed_to_finalize_unpairing, Toast.LENGTH_SHORT).show();
             });
@@ -545,6 +587,17 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
                 .setAutoCancel(true);
 
         if (notificationManager != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (notificationManager.getNotificationChannel(ForeverUsApplication.CHANNEL_ID) == null) {
+                    // Create channel if missing (safety net)
+                    android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                            ForeverUsApplication.CHANNEL_ID,
+                            "Special Dates",
+                            android.app.NotificationManager.IMPORTANCE_HIGH);
+                    channel.setDescription("Reminders for special dates");
+                    notificationManager.createNotificationChannel(channel);
+                }
+            }
             try {
                 notificationManager.notify(999, builder.build());
                 Toast.makeText(requireContext(), "Notification Sent! Check Status Bar.", Toast.LENGTH_SHORT).show();

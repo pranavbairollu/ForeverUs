@@ -35,16 +35,20 @@ public class TimelineViewModel extends AndroidViewModel {
         letterRepository = new LetterRepository(application);
         relationshipRepository = RelationshipRepository.getInstance();
 
-        coupleNickname = Transformations.switchMap(relationshipIdLiveData, id -> relationshipRepository.getCoupleNickname(id));
+        coupleNickname = Transformations.switchMap(relationshipIdLiveData,
+                id -> relationshipRepository.getCoupleNickname(id));
 
         timelineItems.addSource(relationshipIdLiveData, this::onRelationshipIdChanged);
     }
 
     private void onRelationshipIdChanged(String relationshipId) {
         // Remove old sources if they exist
-        if (storiesSource != null) timelineItems.removeSource(storiesSource);
-        if (memoriesSource != null) timelineItems.removeSource(memoriesSource);
-        if (lettersSource != null) timelineItems.removeSource(lettersSource);
+        if (storiesSource != null)
+            timelineItems.removeSource(storiesSource);
+        if (memoriesSource != null)
+            timelineItems.removeSource(memoriesSource);
+        if (lettersSource != null)
+            timelineItems.removeSource(lettersSource);
 
         if (relationshipId == null || relationshipId.isEmpty()) {
             timelineItems.setValue(Resource.success(Collections.emptyList()));
@@ -71,53 +75,65 @@ public class TimelineViewModel extends AndroidViewModel {
         }
     }
 
-    private final java.util.concurrent.ExecutorService backgroundExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private final java.util.concurrent.ExecutorService backgroundExecutor = java.util.concurrent.Executors
+            .newSingleThreadExecutor();
     private final android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
 
     private void combineData() {
-        // Capture current values (LiveData.getValue() must be on Main Thread, safe here)
+        // Capture current values (LiveData.getValue() must be on Main Thread, safe
+        // here)
         Resource<List<Story>> storyResource = storiesSource != null ? storiesSource.getValue() : null;
         Resource<List<Memory>> memoryResource = memoriesSource != null ? memoriesSource.getValue() : null;
         Resource<List<Letter>> letterResource = lettersSource != null ? lettersSource.getValue() : null;
 
         backgroundExecutor.execute(() -> {
             // 1. Loading State Check
-            boolean isStoryLoading = (storyResource == null || (storyResource.status == Resource.Status.LOADING && storyResource.data == null));
-            boolean isMemoryLoading = (memoryResource == null || (memoryResource.status == Resource.Status.LOADING && memoryResource.data == null));
-            boolean isLetterLoading = (letterResource == null || (letterResource.status == Resource.Status.LOADING && letterResource.data == null));
+            boolean isStoryLoading = (storyResource == null
+                    || (storyResource.status == Resource.Status.LOADING && storyResource.data == null));
+            boolean isMemoryLoading = (memoryResource == null
+                    || (memoryResource.status == Resource.Status.LOADING && memoryResource.data == null));
+            boolean isLetterLoading = (letterResource == null
+                    || (letterResource.status == Resource.Status.LOADING && letterResource.data == null));
 
             if (isStoryLoading || isMemoryLoading || isLetterLoading) {
-                 timelineItems.postValue(Resource.loading(null));
-                 return;
+                timelineItems.postValue(Resource.loading(null));
+                return;
             }
 
             List<Object> combinedList = new ArrayList<>();
-            
+
             // Filter Logic
             if (currentFilter.equals("ALL") || currentFilter.equals("STORIES")) {
-                if (storyResource != null && storyResource.data != null) combinedList.addAll(storyResource.data);
+                if (storyResource != null && storyResource.data != null)
+                    combinedList.addAll(storyResource.data);
             }
             if (currentFilter.equals("ALL") || currentFilter.equals("MEMORIES")) {
-                 if (memoryResource != null && memoryResource.data != null) combinedList.addAll(memoryResource.data);
+                if (memoryResource != null && memoryResource.data != null)
+                    combinedList.addAll(memoryResource.data);
             }
             if (currentFilter.equals("ALL") || currentFilter.equals("LETTERS")) {
-                 if (letterResource != null && letterResource.data != null) combinedList.addAll(letterResource.data);
+                if (letterResource != null && letterResource.data != null)
+                    combinedList.addAll(letterResource.data);
             }
-            
+
             boolean hasError = (storyResource != null && storyResource.status == Resource.Status.ERROR) ||
-                               (memoryResource != null && memoryResource.status == Resource.Status.ERROR) ||
-                               (letterResource != null && letterResource.status == Resource.Status.ERROR);
+                    (memoryResource != null && memoryResource.status == Resource.Status.ERROR) ||
+                    (letterResource != null && letterResource.status == Resource.Status.ERROR);
 
             if (hasError) {
-                 StringBuilder errorBuilder = new StringBuilder("Sync issue: ");
-                 if (storyResource != null && storyResource.status == Resource.Status.ERROR) errorBuilder.append("Stories ");
-                 if (memoryResource != null && memoryResource.status == Resource.Status.ERROR) errorBuilder.append("Memories ");
-                 if (letterResource != null && letterResource.status == Resource.Status.ERROR) errorBuilder.append("Letters ");
-                 
-                 if (combinedList.isEmpty()) {
-                     timelineItems.postValue(Resource.error(errorBuilder.toString().trim(), new ArrayList<TimelineItem>()));
-                     return;
-                 }
+                StringBuilder errorBuilder = new StringBuilder("Sync issue: ");
+                if (storyResource != null && storyResource.status == Resource.Status.ERROR)
+                    errorBuilder.append("Stories ");
+                if (memoryResource != null && memoryResource.status == Resource.Status.ERROR)
+                    errorBuilder.append("Memories ");
+                if (letterResource != null && letterResource.status == Resource.Status.ERROR)
+                    errorBuilder.append("Letters ");
+
+                if (combinedList.isEmpty()) {
+                    timelineItems
+                            .postValue(Resource.error(errorBuilder.toString().trim(), new ArrayList<TimelineItem>()));
+                    return;
+                }
             }
 
             // Sort by Time (Descending)
@@ -128,14 +144,15 @@ public class TimelineViewModel extends AndroidViewModel {
             });
 
             List<TimelineItem> finalItemsWithHeaders = generateTimelineWithHeaders(combinedList);
-            
+
             timelineItems.postValue(Resource.success(finalItemsWithHeaders));
         });
     }
 
     private List<TimelineItem> generateTimelineWithHeaders(List<Object> sortedList) {
         List<TimelineItem> finalTimelineItems = new ArrayList<>();
-        java.text.SimpleDateFormat monthYearFormat = new java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault());
+        java.text.SimpleDateFormat monthYearFormat = new java.text.SimpleDateFormat("MMMM yyyy",
+                java.util.Locale.getDefault());
         java.util.Calendar cal = java.util.Calendar.getInstance();
         long now = System.currentTimeMillis();
         cal.setTimeInMillis(now);
@@ -146,34 +163,49 @@ public class TimelineViewModel extends AndroidViewModel {
         List<Object> onThisDayItems = new ArrayList<>();
         List<Object> otherItems = new ArrayList<>();
 
+        // Reuse calendar instance for performance
+        java.util.Calendar itemCal = java.util.Calendar.getInstance();
+
         for (Object item : sortedList) {
             long ts = getTimestamp(item);
-            cal.setTimeInMillis(ts);
-            
-            // "On This Day" Logic: Same Month/Day, Different Year
-            if (cal.get(java.util.Calendar.MONTH) == currentMonth &&
-                cal.get(java.util.Calendar.DAY_OF_MONTH) == currentDay &&
-                cal.get(java.util.Calendar.YEAR) != currentYear) {
-                onThisDayItems.add(item);
-            } else {
+            if (ts <= 0) {
                 otherItems.add(item);
+                continue;
             }
+
+            itemCal.setTimeInMillis(ts);
+
+            // "On This Day" Logic: Same Month/Day, Strictly PAST Year
+            if (itemCal.get(java.util.Calendar.MONTH) == currentMonth &&
+                    itemCal.get(java.util.Calendar.DAY_OF_MONTH) == currentDay &&
+                    itemCal.get(java.util.Calendar.YEAR) < currentYear) {
+                onThisDayItems.add(item);
+            }
+            // Always add to otherItems to maintain chronological order in main list
+            otherItems.add(item);
         }
-        
+
+        // Add Featured Item at the top if matches exist
         if (!onThisDayItems.isEmpty()) {
-            finalTimelineItems.add(new TimelineItem.HeaderItem("On This Day ❤️", now));
-            for (Object item : onThisDayItems) {
-                finalTimelineItems.add(convertToTimelineItem(item));
+            // Select the most recent one (index 0 because sortedList is desc)
+            // Actually sortedList is desc TS, so onThisDayItems is also desc TS.
+            // Index 0 is the "newest" past memory (e.g. 1 year ago vs 5 years ago)
+            Object featuredObj = onThisDayItems.get(0);
+            TimelineItem featuredTimeItem = convertToTimelineItem(featuredObj);
+
+            if (featuredTimeItem != null) {
+                finalTimelineItems.add(new TimelineItem.FeaturedOnThisDay(featuredTimeItem, onThisDayItems.size() - 1));
             }
         }
 
         String lastHeader = "";
         for (Object item : otherItems) {
             long ts = getTimestamp(item);
-            if (ts <= 0) continue; 
-            
+            if (ts <= 0)
+                continue;
+
             String headerTitle = monthYearFormat.format(new java.util.Date(ts));
-            
+
             if (!headerTitle.equals(lastHeader)) {
                 finalTimelineItems.add(new TimelineItem.HeaderItem(headerTitle, ts));
                 lastHeader = headerTitle;
@@ -183,7 +215,7 @@ public class TimelineViewModel extends AndroidViewModel {
 
         return finalTimelineItems;
     }
-    
+
     private TimelineItem convertToTimelineItem(Object item) {
         if (item instanceof Story) {
             return new TimelineItem.StoryItem((Story) item);
@@ -212,15 +244,18 @@ public class TimelineViewModel extends AndroidViewModel {
     public void refresh() {
         String currentId = relationshipIdLiveData.getValue();
         if (currentId != null) {
-             onRelationshipIdChanged(currentId);
+            onRelationshipIdChanged(currentId);
         }
     }
 
     private long getTimestamp(Object object) {
         com.google.firebase.Timestamp ts = null;
-        if (object instanceof Story) ts = ((Story) object).getTimestamp();
-        if (object instanceof Memory) ts = ((Memory) object).getTimestamp();
-        if (object instanceof Letter) ts = ((Letter) object).getTimestamp();
+        if (object instanceof Story)
+            ts = ((Story) object).getTimestamp();
+        else if (object instanceof Memory)
+            ts = ((Memory) object).getTimestamp();
+        else if (object instanceof Letter)
+            ts = ((Letter) object).getTimestamp();
         return ts != null ? ts.toDate().getTime() : 0;
     }
 
