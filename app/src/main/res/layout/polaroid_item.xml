@@ -25,22 +25,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/placeholder_image" />
 
-        <TextView
-            android:id="@+id/txtCaption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-light"
-            android:textSize="12sp"
-            android:textColor="#333333"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="Caption"
-            android:gravity="center"
-            android:letterSpacing="0.05"
-            app:layout_constraintTop_toBottomOf="@+id/imgPolaroidThumbnail"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+
 
         <TextView
              android:id="@+id/txtDate"
@@ -51,7 +36,7 @@
              android:gravity="end"
              android:layout_marginTop="4dp"
              android:text="Date"
-             app:layout_constraintTop_toBottomOf="@+id/txtCaption"
+             app:layout_constraintTop_toBottomOf="@+id/imgPolaroidThumbnail"
              app:layout_constraintEnd_toEndOf="parent"
              app:layout_constraintStart_toStartOf="parent"/>
 

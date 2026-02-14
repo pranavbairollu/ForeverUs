@@ -64,23 +64,17 @@ public class PolaroidAdapter extends RecyclerView.Adapter<PolaroidAdapter.Polaro
 
     static class PolaroidViewHolder extends RecyclerView.ViewHolder {
         ImageView imgThumbnail;
-        TextView txtCaption;
+
         TextView txtDate;
 
         public PolaroidViewHolder(@NonNull View itemView) {
             super(itemView);
             imgThumbnail = itemView.findViewById(R.id.imgPolaroidThumbnail);
-            txtCaption = itemView.findViewById(R.id.txtCaption);
+
             txtDate = itemView.findViewById(R.id.txtDate);
         }
 
         public void bind(final PolaroidEntity item, final OnItemClickListener listener) {
-            if (item.caption != null && !item.caption.isEmpty()) {
-                txtCaption.setText(item.caption);
-                txtCaption.setVisibility(View.VISIBLE);
-            } else {
-                txtCaption.setVisibility(View.GONE);
-            }
 
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
             txtDate.setText(sdf.format(new Date(item.createdAt)));

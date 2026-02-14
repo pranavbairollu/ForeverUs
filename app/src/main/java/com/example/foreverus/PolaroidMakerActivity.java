@@ -596,12 +596,12 @@ public class PolaroidMakerActivity extends BaseActivity {
             // Analog Rotation (Static) - only randomize on new photo
             polaroidRotation = (float) ((Math.random() * 4.0) - 2.0); // Range -2.0 to +2.0
 
-            // Reset Enhancements on new photo load
-            currentFilterIndex = 0;
-            currentFrameIndex = 0;
-            currentEffectIndex = 0;
-            currentFontIndex = 0;
-            isDateStampVisible = false;
+            // Reset Enhancements on new photo load - REMOVED to persist user selection
+            // currentFilterIndex = 0;
+            // currentFrameIndex = 0;
+            // currentEffectIndex = 0;
+            // currentFontIndex = 0;
+            // isDateStampVisible = false;
             developmentProgress = 0f; // Reset development
 
             // Smart Date (EXIF)
