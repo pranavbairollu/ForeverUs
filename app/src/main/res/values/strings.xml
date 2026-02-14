@@ -434,11 +434,67 @@
     
     <string name="feedback_subject">Feedback for ForeverUs</string>
     <string name="about_title">About ForeverUs</string>
+    <string name="about_description">ForeverUs is designed to help couples cherish their memories, share their stories, and stay connected no matter the distance.</string>
     <string name="about_message">Version %1$s\n\nForeverUs is designed to help couples cherish their memories.\n\n© 2026 ForeverUs Team</string>
     
+    <!-- Legal -->
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="terms_of_service_title">Terms of Service</string>
+    <string name="privacy_policy_content"><![CDATA[
+        <h3>1. Introduction</h3>
+        <p>Welcome to ForeverUs. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.</p>
+        
+        <h3>2. Information We Collect</h3>
+        <p>We collect information that you voluntarily provide, such as:</p>
+        <ul>
+        <li> <b>Account Information:</b> Email address, names, and nicknames.</li>
+        <li> <b>User Content:</b> Photos, videos, voice notes, stories, and letters you create or upload.</li>
+        <li> <b>Usage Data:</b> Information about how you interact with the app.</li>
+        </ul>
+        
+        <h3>3. How We Use Your Information</h3>
+        <p>We use your information to:</p>
+        <ul>
+        <li> Provide and improve the App\'s functionality.</li>
+        <li> Sync data between you and your partner.</li>
+        <li> Respond to your support requests.</li>
+        </ul>
+        
+        <h3>4. Data Storage</h3>
+        <p>Your data is stored securely using Firebase services. We do not sell your personal data to third parties.</p>
+        
+        <h3>5. Permissions</h3>
+        <p>We may request access to your device\'s camera, microphone, and storage to enable features like capturing memories and recording voice notes.</p>
+        
+        <h3>6. Contact Us</h3>
+        <p>If you have questions about this Privacy Policy, please contact us at <a href="mailto:pranavbairollu@gmail.com">pranavbairollu@gmail.com</a>.</p>
+    ]]></string>
+    <string name="terms_of_service_content"><![CDATA[
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing or using ForeverUs, you agree to be bound by these Terms of Service. If you do not agree, please do not use the App.</p>
+        
+        <h3>2. User Conduct</h3>
+        <p>You are responsible for the content you create and share. You agree not to use the App for any illegal or unauthorized purpose.</p>
+        
+        <h3>3. Intellectual Property</h3>
+        <p>The App and its original content are owned by ForeverUs and are protected by international copyright laws.</p>
+        
+        <h3>4. Termination</h3>
+        <p>We maintain the right to terminate or suspend access to our service immediately, without prior notice, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+        
+        <h3>5. Changes to Terms</h3>
+        <p>We reserve the right to modify or replace these Terms at any time. Continued use of the App after any such changes constitutes your acceptance of the new Terms.</p>
+        
+        <h3>6. Limitation of Liability</h3>
+        <p>In no event shall ForeverUs be liable for any indirect, incidental, special, consequential or punitive damages.</p>
+        
+        <h3>7. Contact Us</h3>
+        <p>If you have any questions about these Terms, please contact us at <a href="mailto:pranavbairollu@gmail.com">pranavbairollu@gmail.com</a>.</p>
+    ]]></string>
+
     <!-- Guide Topics -->
     <string name="guide_topic_memories">📸 Memories</string>
-    <string name="guide_desc_memories">Your shared gallery for precious moments.\n\n• Tap + to upload photos or videos.\n• Tap a photo to view it in full screen.\n• Long-press to delete unwanted items.\n• All media is synced instantly with your partner.</string>
+    <string name="guide_desc_memories">Your shared gallery for precious moments.\n\n• Tap + to upload photos or videos.\n• Record <b>Voice Notes</b> to add a personal touch.\n• View <b>On This Day</b> flashbacks from previous years.\n• Tap a photo to view it in full screen.\n• Long-press to delete unwanted items.\n• All media is synced instantly with your partner.</string>
     
     <string name="guide_topic_letters">💌 Letters</string>
     <string name="guide_desc_letters">Send surprise messages to the future.\n\n• Write a heartfelt note today.\n• Set a delivery date (e.g., next anniversary).\n• Your partner receives a notification but can only open it when the date arrives!\n• Perfect for birthdays and milestones.</string>
@@ -450,7 +506,7 @@
     <string name="guide_desc_timeline">A journey through time.\n\n• View your relationship milestones in chronological order.\n• Scroll back to see how far you\'ve come together.</string>
     
     <string name="guide_topic_story">📖 Our Story</string>
-    <string name="guide_desc_story">Co-write your unique love story.\n\n• Add chapters with titles and content.\n• Both of you can edit and contribute.\n• A digital book of your relationship.</string>
+    <string name="guide_desc_story">Co-write your unique love story.\n\n• Add chapters with titles and content.\n• Use the <b>AI Writing Helper</b> to generate ideas or fix grammar.\n• Both of you can edit and contribute.\n• A digital book of your relationship.</string>
 
     <string name="guide_topic_adventure">✈️ Adventure Board</string>
     <string name="guide_desc_adventure">Your shared bucket list.\n\n• Add goals, trips, and dreams.\n• Set target dates and estimated costs.\n• Drag and drop to reorder priorities.\n• Mark items as \'Complete\' to celebrate with confetti!</string>

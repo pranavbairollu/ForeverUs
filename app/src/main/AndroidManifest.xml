@@ -75,6 +75,14 @@
             android:theme="@style/Theme.ForeverUs.NoActionBar" />
         <activity android:name=".GuideActivity"
             android:theme="@style/Theme.ForeverUs.NoActionBar" />
+        <activity android:name=".AboutActivity" 
+            android:theme="@style/Theme.ForeverUs.NoActionBar"/>
+
+        <activity
+            android:name=".LegalActivity"
+            android:label="Legal"
+            android:theme="@style/Theme.ForeverUs.NoActionBar"
+            android:parentActivityName=".AboutActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

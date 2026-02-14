@@ -631,20 +631,6 @@ public class SettingsFragment extends Fragment implements SpecialDateAdapter.OnS
     private void showAboutDialog() {
         if (!isAdded())
             return;
-
-        String versionName = "1.0";
-        try {
-            android.content.pm.PackageInfo pInfo = requireContext().getPackageManager()
-                    .getPackageInfo(requireContext().getPackageName(), 0);
-            versionName = pInfo.versionName;
-        } catch (android.content.pm.PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.about_title)
-                .setMessage(getString(R.string.about_message, versionName))
-                .setPositiveButton(R.string.ok, null)
-                .show();
+        startActivity(new Intent(requireContext(), AboutActivity.class));
     }
 }

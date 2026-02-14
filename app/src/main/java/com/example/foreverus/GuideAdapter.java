@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder> {
+public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHolder>
+        implements android.widget.Filterable {
 
-    private final List<GuideItem> guideItems;
+    private final List<GuideItem> originalGuideItems;
+    private final List<GuideItem> filteredGuideItems;
 
     public GuideAdapter(List<GuideItem> guideItems) {
-        this.guideItems = guideItems;
+        this.originalGuideItems = new java.util.ArrayList<>(guideItems);
+        this.filteredGuideItems = guideItems; // Initially same reference, but should be managed
     }
 
     @NonNull
@@ -30,7 +33,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GuideViewHolder holder, int position) {
-        GuideItem item = guideItems.get(position);
+        GuideItem item = filteredGuideItems.get(position);
         holder.bind(item);
 
         holder.itemView.setOnClickListener(v -> {
@@ -42,7 +45,43 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
     @Override
     public int getItemCount() {
-        return guideItems.size();
+        return filteredGuideItems.size();
+    }
+
+    @Override
+    public android.widget.Filter getFilter() {
+        return new android.widget.Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = (constraint == null) ? "" : constraint.toString();
+                List<GuideItem> filteredList = new java.util.ArrayList<>();
+
+                if (charString.isEmpty()) {
+                    filteredList.addAll(originalGuideItems);
+                } else {
+                    for (GuideItem row : originalGuideItems) {
+                        // Filter by title or description
+                        if (row.getTitle().toLowerCase().contains(charString.toLowerCase()) ||
+                                row.getDescription().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+                        }
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.values != null) {
+                    filteredGuideItems.clear();
+                    filteredGuideItems.addAll((List<GuideItem>) results.values);
+                    notifyDataSetChanged();
+                }
+            }
+        };
     }
 
     static class GuideViewHolder extends RecyclerView.ViewHolder {
@@ -67,18 +106,21 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             boolean isExpanded = item.isExpanded();
             descriptionTextView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
-            // Rotate arrow: 180 (Right >) if collapsed, 270 (Down v) if expanded
-            // Assuming base logic:
-            // If ic_arrow_back is used (Left <), then
-            // 180 deg = Right (>)
-            // 270 deg = Down (v)
             float targetRotation = isExpanded ? 270f : 180f;
             arrowImageView.setRotation(targetRotation);
 
-            // Accessibility
-            String stateDescription = isExpanded ? "Expanded" : "Collapsed";
-            itemView.setContentDescription(item.getTitle() + ", " + stateDescription + ". Double tap to toggle.");
-            arrowImageView.setContentDescription(stateDescription);
+            View.AccessibilityDelegate accessibilityDelegate = new View.AccessibilityDelegate() {
+                @Override
+                public void onInitializeAccessibilityNodeInfo(View host,
+                        android.view.accessibility.AccessibilityNodeInfo info) {
+                    super.onInitializeAccessibilityNodeInfo(host, info);
+                    String stateDescription = isExpanded ? "Expanded" : "Collapsed";
+                    info.setStateDescription(stateDescription);
+                    info.addAction(new android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction(
+                            android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK, "Toggle"));
+                }
+            };
+            itemView.setAccessibilityDelegate(accessibilityDelegate);
         }
     }
 }
