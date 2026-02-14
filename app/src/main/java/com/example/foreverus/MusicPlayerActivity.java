@@ -616,6 +616,9 @@ public class MusicPlayerActivity extends BaseActivity {
     }
 
     public class WebAppInterface {
+        private long lastTriggerTime = 0;
+        private static final long DEBOUNCE_DELAY_JS = 2000;
+
         @android.webkit.JavascriptInterface
         public void onVideoPlaying() {
             runOnUiThread(() -> {
@@ -644,11 +647,23 @@ public class MusicPlayerActivity extends BaseActivity {
 
         @android.webkit.JavascriptInterface
         public void onVideoEnded() {
+            long now = System.currentTimeMillis();
+            if (now - lastTriggerTime < DEBOUNCE_DELAY_JS)
+                return;
+            lastTriggerTime = now;
+
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed())
                     return;
                 playNextSong();
             });
+        }
+
+        @android.webkit.JavascriptInterface
+        public void onCurrentTime(float timeInSeconds) {
+            // No UI thread needed for simple variable update, but safety first if we add UI
+            // later
+            currentVideoTime = timeInSeconds;
         }
 
         @android.webkit.JavascriptInterface
@@ -672,27 +687,24 @@ public class MusicPlayerActivity extends BaseActivity {
 
     private String getAdSkipperScript() {
         return "javascript:(function() {" +
-                "    /* GUARD: Prevent Multiple Injections */" +
                 "    if (window.ForeverUsSkipperRunning) return;" +
                 "    window.ForeverUsSkipperRunning = true;" +
                 "    " +
-                "    /* STATE: Track if we have successfully started playing once */" +
-                "    /* var initialPlayDone = false;  <-- REMOVED, using attributes now */" +
+                "    /* CONFIG: Adjustable End Detection Gap */" +
+                "    var END_GAP = 0.5;" +
                 "    " +
-                "    /* CSS: Hide known elements immediately */" +
+                "    /* CSS: Hide Header, Ads, Promos */" +
                 "    var css = ` " +
-                "       /* HIDE HEADER & TOP BAR */" +
                 "       header, #header-bar, .header-bar, .mobile-topbar-header, " +
                 "       ytm-header-bar-renderer, ytm-mobile-topbar-renderer, " +
                 "       .ytm-pivot-bar-renderer, .topbar-icons, #topbar-menu-button, " +
-                "       /* HIDE APP PROMOS & ADS */" +
                 "       ytm-pwa-install-banner, .ytp-app-banner, .open-app-button, " +
                 "       ytm-promoted-sparkles-web-renderer, ytm-companion-slot, " +
-                "       .ad-container, .player-ads, #player-control-overlay " +
+                "       .ad-container, .player-ads, #player-control-overlay, " +
+                "       .ytp-ad-overlay-container, .ytp-ad-message-container " +
                 "       { display: none !important; opacity: 0 !important; height: 0 !important; visibility: hidden !important; pointer-events: none !important; }"
                 +
                 "       " +
-                "       /* FORCE VIDEO FULLSCREEN */" +
                 "       video { " +
                 "           position: fixed !important; " +
                 "           top: 0 !important; left: 0 !important; " +
@@ -708,60 +720,84 @@ public class MusicPlayerActivity extends BaseActivity {
                 "    style.appendChild(document.createTextNode(css));" +
                 "    document.head.appendChild(style);" +
                 "    " +
-                "    /* MUTATION OBSERVER: The Permanent Fix */" +
-                "    var observer = new MutationObserver(function(mutations) {" +
-                "        /* 1. Check for 'Open App' Buttons and DESTROY them */" +
-                "        var buttons = document.querySelectorAll('button, a, div[role=\"button\"]');" +
-                "        buttons.forEach(function(btn) {" +
-                "            if (btn.innerText && (btn.innerText === 'Open App' || btn.innerText === 'Get the app')) {"
-                +
-                "                btn.remove(); /* Completely delete from DOM */" +
-                "            }" +
-                "        });" +
-                "        " +
-                "        /* 2. Enforce Video Rules & SYNC */" +
+                "    /* CORE LOOP: Runs every 200ms (High Speed for accuracy) */" +
+                "    setInterval(function() {" +
                 "        var video = document.querySelector('video');" +
                 "        if (video) {" +
-                "            /* Force Unmute */" +
-                "            if (video.muted) video.muted = false;" +
-                "            " +
-                "            /* Update State if Already Playing */" +
-                "            /* Initial Play: Use Attribute to track state on the ELEMENT itself */" +
-                "            var hasStarted = video.getAttribute('data-has-started') === 'true';" +
-                "            " +
-                "            if (!video.paused) {" +
-                "                 if (!hasStarted) video.setAttribute('data-has-started', 'true');" +
-                "            } else if (!hasStarted) {" +
-                "                 video.play().catch(e => {});" +
+                "            /* 1. SYNC TIME: Send current time to Android for 'Previous' button logic */" +
+                "            if (!video.paused && window.Android && window.Android.onCurrentTime) {" +
+                "                window.Android.onCurrentTime(video.currentTime);" +
                 "            }" +
                 "            " +
-                "            /* Initial Play: Keep trying to play until it successfully starts (initialPlayDone becomes true) */"
-                +
-                "            /* This ensures it Auto-Plays on load, but stops interfering once the user (or auto) has played it once. */"
-                +
+                "            /* 2. END DETECTION: Pre-emptive Strike */" +
+                "            if (video.duration > 0 && !video.paused) {" +
+                "                var remaining = video.duration - video.currentTime;" +
+                "                if (remaining < END_GAP) {" +
+                "                    video.pause();" +
+                "                    if(window.Android) window.Android.onVideoEnded();" +
+                "                    return;" +
+                "                }" +
+                "            }" +
                 "            " +
+                "            /* 3. AD HANDLING */" +
+                "            /* Check for Ad Badge/State */" +
+                "            var adBadge = document.querySelector('.ytp-ad-simple-ad-badge') || " +
+                "                          document.querySelector('.ad-showing') || " +
+                "                          (document.querySelector('.ytp-ad-skip-button') != null);" +
                 "            " +
-                "            /* SYNC: Attach Listeners to sync state with Android */" +
-                "            if (!video.hasAttribute('data-listeners-attached')) {" +
-                "                video.setAttribute('data-listeners-attached', 'true');" +
-                "                video.addEventListener('play', function() { " +
-                "                    video.setAttribute('data-has-started', 'true');" +
-                "                    if(window.Android) window.Android.onVideoPlaying(); " +
+                "            if (adBadge) {" +
+                "                /* THE BLAST: Speed up unskippable ads */" +
+                "                video.playbackRate = 16.0;" +
+                "                video.muted = true;" +
+                "                " +
+                "                /* Click Skip if possible */" +
+                "                var skipBtn = document.querySelector('.ytp-ad-skip-button') || " +
+                "                              document.querySelector('.ytp-ad-skip-button-modern') || " +
+                "                              document.querySelector('.ytp-ad-skip-button-slot') ||" +
+                "                              document.querySelector('.video-ad-skip-button'); " + // Legacy
+                "                if (skipBtn) skipBtn.click();" +
+                "                " +
+                "                /* Click Text-based buttons (Fail-safe) */" +
+                "                var buttons = document.querySelectorAll('button, div[role=\"button\"]');" +
+                "                buttons.forEach(function(btn) {" +
+                "                    if(btn.innerText && (btn.innerText.includes('Skip') || btn.innerText.includes('No Thanks'))) {"
+                +
+                "                        btn.click();" +
+                "                    }" +
                 "                });" +
-                "                video.addEventListener('pause', function() { if(window.Android) window.Android.onVideoPaused(); });"
-                +
-                "                video.addEventListener('ended', function() { if(window.Android) window.Android.onVideoEnded(); });"
-                +
+                "            } else {" +
+                "                /* Normal Playback Resilience */" +
+                "                if(video.playbackRate > 1.0) video.playbackRate = 1.0;" +
+                "                if(video.muted && !window.isAppMuted) video.muted = false;" +
                 "            }" +
-                "        }" +
-                "        " +
-                "        /* 3. Skip Ads */" +
-                "        var skip = document.querySelector('.ytp-ad-skip-button') || document.querySelector('.ytp-ad-skip-button-modern');"
+                "            " +
+                "            /* 4. OPEN APP BUTTON DESTRUCTION */" +
+                "            var banners = document.querySelectorAll('button, a, div[role=\"button\"]');" +
+                "            banners.forEach(function(btn) {" +
+                "                if (btn.innerText && (btn.innerText === 'Open App' || btn.innerText === 'Get the app')) {"
                 +
-                "        if (skip) skip.click();" +
-                "    });" +
+                "                    btn.remove();" +
+                "                }" +
+                "            });" +
+                "        }" +
+                "    }, 200);" +
                 "    " +
-                "    /* Start Observing the entire body for changes */" +
+                "    /* EVENT LISTENERS: One-time attach */" +
+                "    /* We use a mutation observer just to attach listeners to play/pause once video tag exists */" +
+                "    var observer = new MutationObserver(function(mutations) {" +
+                "        var video = document.querySelector('video');" +
+                "        if (video && !video.hasAttribute('data-listeners-attached')) {" +
+                "            video.setAttribute('data-listeners-attached', 'true');" +
+                "            video.addEventListener('play', function() { if(window.Android) window.Android.onVideoPlaying(); });"
+                +
+                "            video.addEventListener('pause', function() { if(window.Android) window.Android.onVideoPaused(); });"
+                +
+                "            /* ended event is less reliable due to autoplay, but we keep it as backup to our interval check */"
+                +
+                "            video.addEventListener('ended', function() { if(window.Android) window.Android.onVideoEnded(); });"
+                +
+                "        }" +
+                "    });" +
                 "    observer.observe(document.body, { childList: true, subtree: true });" +
                 "})()";
     }

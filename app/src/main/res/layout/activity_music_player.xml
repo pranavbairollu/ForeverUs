@@ -212,7 +212,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="4dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_baseline_arrow_back_24"
         android:contentDescription="@string/cd_close_player"
