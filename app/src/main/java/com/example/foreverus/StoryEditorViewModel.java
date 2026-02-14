@@ -188,6 +188,13 @@ public class StoryEditorViewModel extends AndroidViewModel {
             return;
         }
 
+        // Check for empty content
+        String plainContent = content.replaceAll("\\<.*?\\>", "").replaceAll("&nbsp;", " ").trim();
+        if (title.trim().isEmpty() && plainContent.isEmpty()) {
+            deleteStory();
+            return;
+        }
+
         isSaving.setValue(true);
 
         storyRepository.saveStoryWithTransaction(relationshipId, storyId, title, content, currentUserId,

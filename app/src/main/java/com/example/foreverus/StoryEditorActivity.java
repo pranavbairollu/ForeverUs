@@ -300,7 +300,7 @@ public class StoryEditorActivity extends BaseActivity implements StoryAppearance
             return true;
         } else if (item.getItemId() == R.id.action_save_story) {
             String title = binding.storyTitleEditText.getText().toString();
-            String content = binding.storyContentEditText.getText().toString();
+            String content = getStoryContentHtml();
             storyEditorViewModel.saveStory(title, content);
             return true;
         } else if (item.getItemId() == R.id.action_delete_story) {
