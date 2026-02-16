@@ -93,10 +93,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <receiver
-            android:name=".NotificationReceiver"
-            android:enabled="true"
-            android:exported="false" />
+
 
         <receiver
             android:name=".BootReceiver"

@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,7 @@ public class DailyReminderWorker extends Worker {
         }
 
         Context context = getApplicationContext();
-        
+
         // Retrieve relationshipId from InputData passed by WorkManager
         String relationshipId = getInputData().getString("relationshipId");
 
@@ -49,32 +50,53 @@ public class DailyReminderWorker extends Worker {
         }
 
         if (relationshipId == null) {
-             Log.d(TAG, "No relationship ID found in InputData or Prefs, skipping");
-             return Result.success();
+            Log.d(TAG, "No relationship ID found in InputData or Prefs, skipping");
+            return Result.success();
         }
 
         try {
-             AppDatabase db = AppDatabase.getDatabase(context);
-             // We need to use a synchronous call or block until LiveData returns (difficult in Worker)
-             // Best to add a sync method to DAO. 
-             // Note: Depending on DAO implementation, we might need to modify it first.
-             // I will use `getAllSpecialDatesSync` assuming I will add it to DAO next.
-             List<SpecialDate> allDates = db.specialDateDao().getAllSpecialDatesSync(relationshipId); 
-             
-             Calendar today = Calendar.getInstance();
-             int todayMonth = today.get(Calendar.MONTH);
-             int todayDay = today.get(Calendar.DAY_OF_MONTH);
+            AppDatabase db = AppDatabase.getDatabase(context);
+            // We need to use a synchronous call or block until LiveData returns (difficult
+            // in Worker)
+            // Best to add a sync method to DAO.
+            // Note: Depending on DAO implementation, we might need to modify it first.
+            // I will use `getAllSpecialDatesSync` assuming I will add it to DAO next.
+            List<SpecialDate> allDates = db.specialDateDao().getAllSpecialDatesSync(relationshipId);
 
-             for (SpecialDate date : allDates) {
-                 if (date.getDate() != null) {
-                     Calendar eventDate = Calendar.getInstance();
-                     eventDate.setTime(date.getDate());
-                     
-                     if (eventDate.get(Calendar.MONTH) == todayMonth && eventDate.get(Calendar.DAY_OF_MONTH) == todayDay) {
-                         sendNotification(date.getTitle(), relationshipId);
-                     }
-                 }
-             }
+            Calendar today = Calendar.getInstance();
+            int todayMonth = today.get(Calendar.MONTH);
+            int todayDay = today.get(Calendar.DAY_OF_MONTH);
+            int todayYear = today.get(Calendar.YEAR);
+            boolean isLeapYear = new GregorianCalendar().isLeapYear(todayYear);
+
+            for (SpecialDate date : allDates) {
+                if (date != null && date.getDate() != null) {
+                    try {
+                        Calendar eventDate = Calendar.getInstance();
+                        eventDate.setTime(date.getDate());
+
+                        int eventMonth = eventDate.get(Calendar.MONTH);
+                        int eventDay = eventDate.get(Calendar.DAY_OF_MONTH); // 1-31
+
+                        boolean isMatch = (eventMonth == todayMonth && eventDay == todayDay);
+
+                        // Handle Leap Year: If event is Feb 29, and today is Feb 28, and NOT a leap
+                        // year -> Trigger
+                        // Feb is Month 1 in Calendar (0 = Jan, 1 = Feb)
+                        if (!isMatch && !isLeapYear && eventMonth == Calendar.FEBRUARY && eventDay == 29) {
+                            if (todayMonth == Calendar.FEBRUARY && todayDay == 28) {
+                                isMatch = true;
+                            }
+                        }
+
+                        if (isMatch) {
+                            sendNotification(date.getTitle(), relationshipId);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error processing date: " + date.getTitle(), e);
+                    }
+                }
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "Error checking special dates", e);
@@ -87,13 +109,17 @@ public class DailyReminderWorker extends Worker {
 
     private void sendNotification(String title, String relationshipId) {
         Context context = getApplicationContext();
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Intent to open app
         Intent intent = new Intent(context, DashboardActivity.class);
-        intent.putExtra("relationship_id", relationshipId); // Use literal or constant if accessible, using literal to be safe/lazy or import it? Better check imports. Import is static.
+        intent.putExtra("relationship_id", relationshipId); // Use literal or constant if accessible, using literal to
+                                                            // be safe/lazy or import it? Better check imports. Import
+                                                            // is static.
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, ForeverUsApplication.CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher) // Fallback to launcher icon

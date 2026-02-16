@@ -12,9 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NotificationScheduler {
 
     private static final String PREF_ALARMS = "active_alarms";
@@ -29,15 +26,21 @@ public class NotificationScheduler {
         String relationshipId;
 
         AlarmData(String lid, long time, int nid, String sender, String relId) {
-            letterId = lid; triggerTime = time; notificationId = nid; senderName = sender; relationshipId = relId;
+            letterId = lid;
+            triggerTime = time;
+            notificationId = nid;
+            senderName = sender;
+            relationshipId = relId;
         }
     }
 
-    public static void scheduleAlarm(Context context, String letterId, long triggerTime, String senderName, String relationshipId) {
-        if (triggerTime <= System.currentTimeMillis()) return;
+    public static void scheduleAlarm(Context context, String letterId, long triggerTime, String senderName,
+            String relationshipId) {
+        if (triggerTime <= System.currentTimeMillis())
+            return;
 
         SharedPreferences prefs = context.getSharedPreferences("foreverus_alarms", Context.MODE_PRIVATE);
-        
+
         int notificationId = -1;
         JSONObject targetAlarm = null;
 
@@ -45,19 +48,19 @@ public class NotificationScheduler {
         try {
             String existingJson = prefs.getString(PREF_ALARMS, "[]");
             JSONArray alarms = new JSONArray(existingJson);
-            
+
             // Check for existing mapping
             for (int i = 0; i < alarms.length(); i++) {
-                 JSONObject obj = alarms.getJSONObject(i);
-                 if (obj.getString("letterId").equals(letterId)) {
-                     targetAlarm = obj;
-                     if (obj.has("notificationId")) {
+                JSONObject obj = alarms.getJSONObject(i);
+                if (obj.getString("letterId").equals(letterId)) {
+                    targetAlarm = obj;
+                    if (obj.has("notificationId")) {
                         notificationId = obj.getInt("notificationId");
-                     }
-                     break;
-                 }
+                    }
+                    break;
+                }
             }
-            
+
             // If new letter, generate NEW unique ID
             if (targetAlarm == null) {
                 targetAlarm = new JSONObject();
@@ -65,7 +68,7 @@ public class NotificationScheduler {
                 int counter = prefs.getInt(PREF_ID_COUNTER, 1000);
                 notificationId = counter + 1;
                 prefs.edit().putInt(PREF_ID_COUNTER, notificationId).apply();
-                
+
                 targetAlarm.put("letterId", letterId);
                 targetAlarm.put("notificationId", notificationId);
                 alarms.put(targetAlarm); // Add to list
@@ -81,10 +84,10 @@ public class NotificationScheduler {
             targetAlarm.put("triggerTime", triggerTime);
             targetAlarm.put("senderName", senderName);
             targetAlarm.put("relationshipId", relationshipId);
-            
+
             // 3. Persist Mapping
             prefs.edit().putString(PREF_ALARMS, alarms.toString()).apply();
-            
+
         } catch (JSONException e) {
             e.printStackTrace();
             return; // Fail safe
@@ -100,32 +103,32 @@ public class NotificationScheduler {
         try {
             JSONArray alarms = new JSONArray(json);
             JSONArray activeAlarms = new JSONArray(); // Filter out old ones
-            
+
             for (int i = 0; i < alarms.length(); i++) {
                 JSONObject obj = alarms.getJSONObject(i);
                 long time = obj.getLong("triggerTime");
                 if (time > System.currentTimeMillis()) {
-                    performSchedule(context, 
-                        obj.getInt("notificationId"), 
-                        obj.getString("letterId"), 
-                        time, 
-                        obj.optString("senderName", "Partner"), 
-                        obj.optString("relationshipId")
-                    );
+                    performSchedule(context,
+                            obj.getInt("notificationId"),
+                            obj.getString("letterId"),
+                            time,
+                            obj.optString("senderName", "Partner"),
+                            obj.optString("relationshipId"));
                     activeAlarms.put(obj);
                 }
             }
             // Update prefs (Clean up expired)
             prefs.edit().putString(PREF_ALARMS, activeAlarms.toString()).apply();
-            
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private static void performSchedule(Context context, int notificationId, String letterId, long time, String sender, String relationshipId) {
+    private static void performSchedule(Context context, int notificationId, String letterId, long time, String sender,
+            String relationshipId) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
                 Log.w("NotificationScheduler", "Cannot schedule exact alarm");
@@ -140,11 +143,10 @@ public class NotificationScheduler {
         intent.putExtra("notificationId", notificationId);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-            context, 
-            notificationId, // Use Stable Integer ID
-            intent, 
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+                context,
+                notificationId, // Use Stable Integer ID
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         try {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent);
@@ -153,53 +155,4 @@ public class NotificationScheduler {
         }
     }
 
-    // --- Special Date Support (Restored) ---
-    
-    public static void scheduleNotifications(Context context, List<SpecialDate> dates) {
-        for (SpecialDate date : dates) {
-            scheduleNotification(context, date);
-        }
-    }
-
-    public static void scheduleNotification(Context context, SpecialDate date) {
-        if (date.getDate() == null) return;
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-             return; 
-        }
-
-        // Calculate time: 9 AM on next occurrence
-        long triggerTime = date.getNextOccurrence().getTime(); 
-        
-        Intent intent = new Intent(context, NotificationReceiver.class); // Found via search
-        intent.putExtra("title", "Special Day: " + date.getTitle());
-        intent.putExtra("message", "Don't forget today is special!");
-        intent.putExtra("id", date.getNotificationId());
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-            context,
-            date.getNotificationId(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        try {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void cancelNotifications(Context context, SpecialDate date) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-            context,
-            date.getNotificationId(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-        alarmManager.cancel(pendingIntent);
-    }
 }
