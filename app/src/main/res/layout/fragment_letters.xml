@@ -70,6 +70,8 @@
             <include
                 android:id="@+id/emptyStateLayout"
                 layout="@layout/layout_state_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

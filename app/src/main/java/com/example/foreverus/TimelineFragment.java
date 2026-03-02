@@ -37,7 +37,8 @@ public class TimelineFragment extends Fragment {
         observeViewModel();
 
         binding.swipeRefreshLayout.setOnRefreshListener(() -> timelineViewModel.refresh());
-        // Retry button specific binding moved to showError for shared layout flexibility
+        // Retry button specific binding moved to showError for shared layout
+        // flexibility
 
         // Observe the relationshipId to load the timeline
         RelationshipRepository.getInstance().getRelationshipId().observe(getViewLifecycleOwner(), id -> {
@@ -46,19 +47,24 @@ public class TimelineFragment extends Fragment {
         });
 
         binding.filterChipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.isEmpty()) return;
+            if (checkedIds.isEmpty())
+                return;
             int id = checkedIds.get(0);
             String filter = "ALL";
-            if (id == R.id.chipStories) filter = "STORIES";
-            else if (id == R.id.chipMemories) filter = "MEMORIES";
-            else if (id == R.id.chipLetters) filter = "LETTERS";
-            
+            if (id == R.id.chipStories)
+                filter = "STORIES";
+            else if (id == R.id.chipMemories)
+                filter = "MEMORIES";
+            else if (id == R.id.chipLetters)
+                filter = "LETTERS";
+
             timelineViewModel.setFilter(filter);
         });
 
         timelineAdapter.setOnItemClickListener((item, sharedView, transitionName) -> {
             if (!isAdded() || currentRelationshipId == null) {
-                if (isAdded()) Toast.makeText(getContext(), "Relationship ID not loaded", Toast.LENGTH_SHORT).show();
+                if (isAdded())
+                    Toast.makeText(getContext(), "Relationship ID not loaded", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -77,17 +83,19 @@ public class TimelineFragment extends Fragment {
             } else if (item instanceof TimelineItem.MemoryItem) {
                 com.example.foreverus.Memory memory = ((TimelineItem.MemoryItem) item).getMemory();
                 if ("video".equals(memory.getMediaType())) {
-                   // Handled in adapter
+                    // Handled in adapter
                 } else {
-                    android.content.Intent intent = new android.content.Intent(getContext(), MemoryDetailActivity.class);
+                    android.content.Intent intent = new android.content.Intent(getContext(),
+                            MemoryDetailActivity.class);
                     intent.putExtra(MemoryDetailActivity.EXTRA_IMAGE_URL, memory.getImageUrl());
                     intent.putExtra("extra_title", memory.getTitle());
                     intent.putExtra("extra_description", memory.getDescription());
-                    
+
                     if (sharedView != null && transitionName != null) {
                         intent.putExtra(MemoryDetailActivity.EXTRA_TRANSITION_NAME, transitionName);
-                        androidx.core.app.ActivityOptionsCompat options = androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                requireActivity(), sharedView, transitionName);
+                        androidx.core.app.ActivityOptionsCompat options = androidx.core.app.ActivityOptionsCompat
+                                .makeSceneTransitionAnimation(
+                                        requireActivity(), sharedView, transitionName);
                         startActivity(intent, options.toBundle());
                     } else {
                         startActivity(intent);
@@ -106,13 +114,16 @@ public class TimelineFragment extends Fragment {
 
     private void observeViewModel() {
         timelineViewModel.getTimelineItems().observe(getViewLifecycleOwner(), resource -> {
-            if (resource == null) return;
+            if (resource == null)
+                return;
 
             binding.swipeRefreshLayout.setRefreshing(resource.status == Resource.Status.LOADING);
 
-            if (resource.status == Resource.Status.SUCCESS || (resource.status == Resource.Status.ERROR && resource.data != null && !resource.data.isEmpty())) {
+            if (resource.status == Resource.Status.SUCCESS || (resource.status == Resource.Status.ERROR
+                    && resource.data != null && !resource.data.isEmpty())) {
                 showSuccess(resource.data);
-            } else if (resource.status == Resource.Status.LOADING && (resource.data == null || resource.data.isEmpty())) {
+            } else if (resource.status == Resource.Status.LOADING
+                    && (resource.data == null || resource.data.isEmpty())) {
                 showLoading();
             } else if (resource.status == Resource.Status.ERROR) {
                 showError(resource.message);
@@ -124,7 +135,8 @@ public class TimelineFragment extends Fragment {
         });
 
         timelineViewModel.getCoupleNickname().observe(getViewLifecycleOwner(), nickname -> {
-            binding.coupleNicknameTextView.setText(nickname != null && !nickname.isEmpty() ? nickname : getString(R.string.app_name));
+            binding.coupleNicknameTextView
+                    .setText(nickname != null && !nickname.isEmpty() ? nickname : getString(R.string.app_name));
         });
     }
 
@@ -156,7 +168,7 @@ public class TimelineFragment extends Fragment {
         binding.timelineRecyclerView.setVisibility(View.GONE);
         binding.emptyView.getRoot().setVisibility(View.VISIBLE);
         binding.errorView.getRoot().setVisibility(View.GONE);
-        
+
         binding.emptyView.txtEmptyTitle.setText(R.string.timeline_empty_soft);
         binding.emptyView.txtEmptyMessage.setVisibility(View.GONE);
     }
@@ -167,9 +179,10 @@ public class TimelineFragment extends Fragment {
         binding.timelineRecyclerView.setVisibility(View.GONE);
         binding.emptyView.getRoot().setVisibility(View.GONE);
         binding.errorView.getRoot().setVisibility(View.VISIBLE);
-        
+
         binding.errorView.txtErrorTitle.setText(R.string.timeline_error_title);
-        binding.errorView.txtErrorMessage.setText(message != null ? message : getString(R.string.timeline_error_subtitle));
+        binding.errorView.txtErrorMessage
+                .setText(message != null ? message : getString(R.string.timeline_error_subtitle));
         binding.errorView.btnErrorRetry.setOnClickListener(v -> timelineViewModel.refresh());
     }
 
