@@ -407,6 +407,7 @@
     <string name="ok">OK</string>
     <string name="notification_permission_rationale">We need notification permission to send you daily reminders and updates from your partner.</string>
     <string name="together_starting_today">Together since today</string>
+    <string name="together_for_one_day">Together for 1 Day</string>
     <string name="together_for_days_format">Together for %d days</string>
     <string name="menu_more">More</string>
     <string name="ai_suggestion_title">AI Suggestion</string>

@@ -90,6 +90,8 @@ public class SettingsViewModel extends AndroidViewModel {
                         long days = TimeUnit.MILLISECONDS.toDays(Math.max(0, diff));
                         if (days == 0) {
                             daysTogether.postValue(getApplication().getString(R.string.together_starting_today));
+                        } else if (days == 1) {
+                            daysTogether.postValue(getApplication().getString(R.string.together_for_one_day));
                         } else {
                             daysTogether.postValue(getApplication().getString(R.string.together_for_days_format, days));
                         }
