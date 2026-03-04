@@ -43,11 +43,17 @@
 
 ## 📱 Screenshots
 
-> *Add screenshots of your app here to showcase the beautiful UI!*
 <div align="center">
-  <img src="https://via.placeholder.com/250x500.png?text=Timeline" width="200" style="margin: 10px;" />
-  <img src="https://via.placeholder.com/250x500.png?text=Smart+Letters" width="200" style="margin: 10px;" />
-  <img src="https://via.placeholder.com/250x500.png?text=Adventure+Board" width="200" style="margin: 10px;" />
+  <img src="screenshots/Memories.jpeg" width="200" style="margin: 10px;" alt="Memories" />
+  <img src="screenshots/Timeline.jpeg" width="200" style="margin: 10px;" alt="Timeline" />
+  <img src="screenshots/Letters.jpeg" width="200" style="margin: 10px;" alt="Letters" />
+  <img src="screenshots/Adventure.jpeg" width="200" style="margin: 10px;" alt="Adventure Board" />
+  <img src="screenshots/Polaroid.jpeg" width="200" style="margin: 10px;" alt="Polaroid" />
+  <img src="screenshots/PolaroidGallery.jpeg" width="200" style="margin: 10px;" alt="Polaroid Gallery" />
+  <img src="screenshots/Songs.jpeg" width="200" style="margin: 10px;" alt="Songs" />
+  <img src="screenshots/Story.jpeg" width="200" style="margin: 10px;" alt="Story Editor" />
+  <img src="screenshots/UsTime Spinner.jpeg" width="200" style="margin: 10px;" alt="UsTime Spinner" />
+  <img src="screenshots/Settings.jpeg" width="200" style="margin: 10px;" alt="Settings" />
 </div>
 
 ---
