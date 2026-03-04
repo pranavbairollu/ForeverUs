@@ -44,16 +44,17 @@
 ## 📱 Screenshots
 
 <div align="center">
+  <img src="screenshots/Story.jpeg" width="200" style="margin: 10px;" alt="Story Editor" />
   <img src="screenshots/Memories.jpeg" width="200" style="margin: 10px;" alt="Memories" />
-  <img src="screenshots/Timeline.jpeg" width="200" style="margin: 10px;" alt="Timeline" />
   <img src="screenshots/Letters.jpeg" width="200" style="margin: 10px;" alt="Letters" />
+  <img src="screenshots/Songs.jpeg" width="200" style="margin: 10px;" alt="Songs" />
+  <img src="screenshots/Timeline.jpeg" width="200" style="margin: 10px;" alt="Timeline" />
   <img src="screenshots/Adventure.jpeg" width="200" style="margin: 10px;" alt="Adventure Board" />
+  <img src="screenshots/Settings.jpeg" width="200" style="margin: 10px;" alt="Settings" />
   <img src="screenshots/Polaroid.jpeg" width="200" style="margin: 10px;" alt="Polaroid" />
   <img src="screenshots/PolaroidGallery.jpeg" width="200" style="margin: 10px;" alt="Polaroid Gallery" />
-  <img src="screenshots/Songs.jpeg" width="200" style="margin: 10px;" alt="Songs" />
-  <img src="screenshots/Story.jpeg" width="200" style="margin: 10px;" alt="Story Editor" />
   <img src="screenshots/UsTime Spinner.jpeg" width="200" style="margin: 10px;" alt="UsTime Spinner" />
-  <img src="screenshots/Settings.jpeg" width="200" style="margin: 10px;" alt="Settings" />
+  
 </div>
 
 ---
@@ -92,4 +93,6 @@
 
 ## 📝 License
 
-This project is open-source and available under the MIT License. See the [LICENSE](LICENSE) file for more information.
+**© 2026 Pranav Bairollu. All Rights Reserved.**
+
+This repository and the code within it are proprietary and **not** open-source. You may view the code for portfolio or educational purposes, but you are not permitted to copy, modify, distribute, or use this application or its source code for any personal or commercial purposes without explicit permission.
