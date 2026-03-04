@@ -65,7 +65,7 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/ForeverUs.git
+   git clone https://github.com/pranavbairollu/ForeverUs.git
    cd ForeverUs
    ```
 
