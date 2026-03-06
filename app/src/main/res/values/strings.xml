@@ -443,29 +443,34 @@
     <string name="terms_of_service_title">Terms of Service</string>
     <string name="privacy_policy_content"><![CDATA[
         <h3>1. Introduction</h3>
-        <p>Welcome to ForeverUs. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application.</p>
+        <p>Welcome to ForeverUs. We are committed to protecting your privacy and ensuring your shared memories remain secure. This Privacy Policy explains how we collect, use, and safeguard your information.</p>
         
         <h3>2. Information We Collect</h3>
-        <p>We collect information that you voluntarily provide, such as:</p>
+        <p>We collect information you voluntarily provide:</p>
         <ul>
-        <li> <b>Account Information:</b> Email address, names, and nicknames.</li>
-        <li> <b>User Content:</b> Photos, videos, voice notes, stories, and letters you create or upload.</li>
-        <li> <b>Usage Data:</b> Information about how you interact with the app.</li>
+        <li> <b>Account Data:</b> Email addresses, names, and couple nicknames.</li>
+        <li> <b>User Content:</b> Photos, videos, voice notes, stories, letters, bucket list items, and special dates you create or upload.</li>
+        <li> <b>Usage Data:</b> Basic interactions to improve app functionality.</li>
         </ul>
         
         <h3>3. How We Use Your Information</h3>
-        <p>We use your information to:</p>
+        <p>We use your information exclusively to:</p>
         <ul>
-        <li> Provide and improve the App\'s functionality.</li>
-        <li> Sync data between you and your partner.</li>
-        <li> Respond to your support requests.</li>
+        <li> Provide and improve the App\'s core functionality.</li>
+        <li> Securely sync data between you and your paired partner.</li>
+        <li> Respond to your support and feedback requests.</li>
         </ul>
         
-        <h3>4. Data Storage</h3>
-        <p>Your data is stored securely using Firebase services. We do not sell your personal data to third parties.</p>
+        <h3>4. Third-Party Services &amp; AI Features</h3>
+        <p>ForeverUs utilizes trusted third-party services:</p>
+        <ul>
+        <li> <b>Firebase:</b> For secure authentication, database, and cloud storage.</li>
+        <li> <b>YouTube:</b> For the Music Player feature, which embeds and streams content. Your use of this feature is subject to YouTube\'s Terms of Service.</li>
+        <li> <b>AI Writing Helper:</b> When using this feature in stories, the specific text you input is securely processed by AI models to generate suggestions or fix grammar. No other personal data is shared with the AI.</li>
+        </ul>
         
-        <h3>5. Permissions</h3>
-        <p>We may request access to your device\'s camera, microphone, and storage to enable features like capturing memories and recording voice notes.</p>
+        <h3>5. Data Deletion &amp; Unpairing</h3>
+        <p>You have full control over your data. Using the <b>"Unpair Device"</b> feature in Settings will instantly and permanently delete all shared data (memories, stories, letters, etc.) between you and your partner from our servers.</p>
         
         <h3>6. Contact Us</h3>
         <p>If you have questions about this Privacy Policy, please contact us at <a href="mailto:pranavbairollu@gmail.com">pranavbairollu@gmail.com</a>.</p>
@@ -474,20 +479,20 @@
         <h3>1. Acceptance of Terms</h3>
         <p>By accessing or using ForeverUs, you agree to be bound by these Terms of Service. If you do not agree, please do not use the App.</p>
         
-        <h3>2. User Conduct</h3>
-        <p>You are responsible for the content you create and share. You agree not to use the App for any illegal or unauthorized purpose.</p>
+        <h3>2. Intended Use &amp; Conduct</h3>
+        <p>ForeverUs is designed as a private, shared space for couples. You are entirely responsible for the content you create, upload, and share. You agree not to use the App for any illegal, harassing, or unauthorized purpose.</p>
         
         <h3>3. Intellectual Property</h3>
-        <p>The App and its original content are owned by ForeverUs and are protected by international copyright laws.</p>
+        <p>The App and its original features and design are owned by ForeverUs. However, you retain all rights and ownership to the personal content (photos, videos, stories) you create and upload.</p>
         
-        <h3>4. Termination</h3>
-        <p>We maintain the right to terminate or suspend access to our service immediately, without prior notice, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+        <h3>4. AI Generated Content</h3>
+        <p>The AI Writing Helper provides suggestions meant to assist you. This content is provided "as-is" without warranties of any kind. You are responsible for reviewing and modifying any AI-generated text before saving it.</p>
         
-        <h3>5. Changes to Terms</h3>
-        <p>We reserve the right to modify or replace these Terms at any time. Continued use of the App after any such changes constitutes your acceptance of the new Terms.</p>
+        <h3>5. Termination &amp; Data Loss</h3>
+        <p>We maintain the right to terminate or suspend access to our service immediately if you breach these Terms. You may also initiate an automated data deletion via the <b>"Unpair Device"</b> feature. Be aware that this action is irreversible and permanently deletes your shared history.</p>
         
-        <h3>6. Limitation of Liability</h3>
-        <p>In no event shall ForeverUs be liable for any indirect, incidental, special, consequential or punitive damages.</p>
+        <h3>6. Changes to Terms</h3>
+        <p>We reserve the right to modify or replace these Terms at any time. Continued use of the App after any changes constitutes your acceptance of the new Terms.</p>
         
         <h3>7. Contact Us</h3>
         <p>If you have any questions about these Terms, please contact us at <a href="mailto:pranavbairollu@gmail.com">pranavbairollu@gmail.com</a>.</p>
