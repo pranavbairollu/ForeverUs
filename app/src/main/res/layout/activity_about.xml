@@ -131,8 +131,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnInstagram"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="match_parent"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Follow on Instagram"
                 app:icon="@drawable/ic_instagram"
@@ -161,8 +161,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPrivacyPolicy"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="match_parent"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/privacy_policy_title"
                 app:icon="@drawable/ic_baseline_lock_24"
@@ -170,8 +170,8 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTermsOfService"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="match_parent"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/terms_of_service_title"
