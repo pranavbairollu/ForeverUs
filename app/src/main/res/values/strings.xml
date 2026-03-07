@@ -448,25 +448,25 @@
         <h3>2. Information We Collect</h3>
         <p>We collect information you voluntarily provide:</p>
         <ul>
-        <li> <b>Account Data:</b> Email addresses, names, and couple nicknames.</li>
-        <li> <b>User Content:</b> Photos, videos, voice notes, stories, letters, bucket list items, and special dates you create or upload.</li>
-        <li> <b>Usage Data:</b> Basic interactions to improve app functionality.</li>
+        <li>&nbsp;<b>Account Data:</b> Email addresses, names, and couple nicknames.</li>
+        <li>&nbsp;<b>User Content:</b> Photos, videos, voice notes, stories, letters, bucket list items, and special dates you create or upload.</li>
+        <li>&nbsp;<b>Usage Data:</b> Basic interactions to improve app functionality.</li>
         </ul>
         
         <h3>3. How We Use Your Information</h3>
         <p>We use your information exclusively to:</p>
         <ul>
-        <li> Provide and improve the App\'s core functionality.</li>
-        <li> Securely sync data between you and your paired partner.</li>
-        <li> Respond to your support and feedback requests.</li>
+        <li>&nbsp;Provide and improve the App\'s core functionality.</li>
+        <li>&nbsp;Securely sync data between you and your paired partner.</li>
+        <li>&nbsp;Respond to your support and feedback requests.</li>
         </ul>
         
         <h3>4. Third-Party Services &amp; AI Features</h3>
         <p>ForeverUs utilizes trusted third-party services:</p>
         <ul>
-        <li> <b>Firebase:</b> For secure authentication, database, and cloud storage.</li>
-        <li> <b>YouTube:</b> For the Music Player feature, which embeds and streams content. Your use of this feature is subject to YouTube\'s Terms of Service.</li>
-        <li> <b>AI Writing Helper:</b> When using this feature in stories, the specific text you input is securely processed by AI models to generate suggestions or fix grammar. No other personal data is shared with the AI.</li>
+        <li>&nbsp;<b>Firebase:</b> For secure authentication, database, and cloud storage.</li>
+        <li>&nbsp;<b>YouTube:</b> For the Music Player feature, which embeds and streams content. Your use of this feature is subject to YouTube\'s Terms of Service.</li>
+        <li>&nbsp;<b>AI Writing Helper:</b> When using this feature in stories, the specific text you input is securely processed by AI models to generate suggestions or fix grammar. No other personal data is shared with the AI.</li>
         </ul>
         
         <h3>5. Data Deletion &amp; Unpairing</h3>

@@ -359,12 +359,14 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/logoutButton"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/settings_log_out"
                     android:textColor="@color/color_danger"
                     app:strokeColor="@color/color_danger"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/headerDanger"/>
 
                 <com.google.android.material.button.MaterialButton
