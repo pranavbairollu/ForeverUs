@@ -21,6 +21,7 @@ public class LetterViewActivity extends BaseActivity {
     private static final String TAG = "LetterViewActivity";
     private ActivityLetterViewBinding binding;
     private LetterViewModel letterViewModel;
+    private boolean isEnvelopeOpened = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,52 +114,64 @@ public class LetterViewActivity extends BaseActivity {
             binding.waxSealImage.setAlpha(1.0f);
         } else {
             // UNLOCKED STATE - Animation
-            // Show envelope first, then allow opening
-            binding.envelopeOverlay.setVisibility(View.VISIBLE);
-            binding.letterContentGroup.setVisibility(View.GONE); // Hidden initially
+            if (!isEnvelopeOpened) {
+                // Show envelope first, then allow opening
+                binding.envelopeOverlay.setVisibility(View.VISIBLE);
+                binding.envelopeOverlay.setAlpha(1f);
+                binding.envelopeOverlay.setTranslationY(0f);
+                binding.waxSealImage.setAlpha(1f);
+                binding.waxSealImage.setScaleX(1f);
+                binding.waxSealImage.setScaleY(1f);
+                binding.letterContentGroup.setVisibility(View.GONE); // Hidden initially
 
-            binding.timeCapsuleTitle.setText("For Your Eyes Only");
-            binding.timeCapsuleSubtitle.setText("The time has come.");
-            binding.waxSealImage.setImageResource(R.drawable.ic_baseline_lock_open_24);
-            binding.btnOpenSeal.setVisibility(View.VISIBLE);
-            // VISIBILITY FIX: Enforce Red Background + White Text
-            binding.btnOpenSeal.setBackgroundTintList(
-                    android.content.res.ColorStateList.valueOf(getColor(android.R.color.holo_red_dark)));
-            binding.btnOpenSeal.setTextColor(getColor(android.R.color.white));
+                binding.timeCapsuleTitle.setText("For Your Eyes Only");
+                binding.timeCapsuleSubtitle.setText("The time has come.");
+                binding.waxSealImage.setImageResource(R.drawable.ic_baseline_lock_open_24);
+                binding.btnOpenSeal.setVisibility(View.VISIBLE);
+                // VISIBILITY FIX: Enforce Red Background + White Text
+                binding.btnOpenSeal.setBackgroundTintList(
+                        android.content.res.ColorStateList.valueOf(getColor(android.R.color.holo_red_dark)));
+                binding.btnOpenSeal.setTextColor(getColor(android.R.color.white));
 
-            View.OnClickListener openListener = v -> {
-                // ANIMATION
-                binding.waxSealImage.animate()
-                        .scaleX(1.5f).scaleY(1.5f).alpha(0f)
-                        .setDuration(500)
-                        .withEndAction(() -> {
-                            binding.envelopeOverlay.animate()
-                                    .translationY(binding.envelopeOverlay.getHeight())
-                                    .alpha(0f)
-                                    .setDuration(800)
-                                    .withEndAction(() -> {
-                                        binding.envelopeOverlay.setVisibility(View.GONE);
-                                        binding.letterContentGroup.setVisibility(View.VISIBLE);
-                                        binding.letterContentGroup.setAlpha(0f);
-                                        binding.letterContentGroup.animate().alpha(1f).setDuration(500).start();
+                View.OnClickListener openListener = v -> {
+                    // ANIMATION
+                    binding.waxSealImage.animate()
+                            .scaleX(1.5f).scaleY(1.5f).alpha(0f)
+                            .setDuration(500)
+                            .withEndAction(() -> {
+                                binding.envelopeOverlay.animate()
+                                        .translationY(binding.envelopeOverlay.getHeight())
+                                        .alpha(0f)
+                                        .setDuration(800)
+                                        .withEndAction(() -> {
+                                            binding.envelopeOverlay.setVisibility(View.GONE);
+                                            binding.letterContentGroup.setVisibility(View.VISIBLE);
+                                            binding.letterContentGroup.setAlpha(0f);
+                                            binding.letterContentGroup.animate().alpha(1f).setDuration(500).start();
 
-                                        binding.letterContentGroup.animate().alpha(1f).setDuration(500).start();
+                                            // Romantic Animation
+                                            FallingPetalsView petals = findViewById(R.id.fallingPetalsView);
+                                            if (petals != null)
+                                                petals.startShower();
 
-                                        // Romantic Animation
-                                        FallingPetalsView petals = findViewById(R.id.fallingPetalsView);
-                                        if (petals != null)
-                                            petals.startShower();
+                                            isEnvelopeOpened = true;
 
-                                        // Mark as opened in DB
-                                        if (!letter.isOpened()) {
-                                            letterViewModel.markLetterAsOpened(letter);
-                                        }
-                                    }).start();
-                        }).start();
-            };
+                                            // Mark as opened in DB
+                                            if (!letter.isOpened()) {
+                                                letterViewModel.markLetterAsOpened(letter);
+                                            }
+                                        }).start();
+                            }).start();
+                };
 
-            binding.btnOpenSeal.setOnClickListener(openListener);
-            binding.waxSealImage.setOnClickListener(openListener);
+                binding.btnOpenSeal.setOnClickListener(openListener);
+                binding.waxSealImage.setOnClickListener(openListener);
+            } else {
+                // ALREADY OPENED - Just show the letter content
+                binding.envelopeOverlay.setVisibility(View.GONE);
+                binding.letterContentGroup.setVisibility(View.VISIBLE);
+                binding.letterContentGroup.setAlpha(1f);
+            }
 
             // Populate Content
             binding.letterTitleTextView.setText(letter.getTitle());
